@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset = "UTF-8">
+		<title> Summarizer </title>
+		<link rel = "stylesheet" href="{{
+		url_for('static', filename='css/main.css')}}">	
+	</head>
+	
+	<body>
+		<img src = "https://drive.tiny.cloud/1/sslbrdzhdf0bkymqpwnkjqu0ueb94p3bd5ybyqscw7tsjk36/cd82ea98-94a2-471e-9a50-01afb4a2197a" alt="Newspaper Headline Image">
+		<br>
+		<form action = "summarize" method = "post">
+			<h1> Enter article link : </h1>
+			<input class="link" type = "text" name = "link_input">
+			<br>
+			<input class="button" type = "submit" value = "Take a Peak" id = "greet">
+			{% for message in get_flashed_messages()%}
+				<p> {{message}} </p><br>
+			{% endfor %}
+		</form>
+	</body>
+</html>
