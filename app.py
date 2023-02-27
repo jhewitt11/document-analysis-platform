@@ -26,7 +26,7 @@ def get_summary(url):
     
     return title, summary
 
-@app.route("/hello")
+@app.route("/")
 def index():
     return render_template("index.html")
 
