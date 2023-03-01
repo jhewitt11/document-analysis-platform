@@ -1,30 +1,12 @@
-
 import json
 import requests
 from flask import Flask, render_template, jsonify, request, flash
-from newspaper import Article
+
+from  tools import get_summary, save_results
 
 app = Flask(__name__)
 app.secret_key = "chauncey_billups_lasagna_turkey"
 
-
-def get_summary(url):
-
-    try:
-        article = Article(url)
-    
-        article.download()
-        article.parse()
-        article.nlp()
-        
-        title = article.title
-        summary = article.summary
-  
-    except :
-        title = 'Title'
-        summary = 'Summary'      
-    
-    return title, summary
 
 @app.route("/")
 def index():
@@ -40,10 +22,11 @@ def summarize():
     flash("Title : " + TITLE)
     flash("Summary : " + SUMMARY)
     
-    return render_template("index.html")
+    return render_template("index.html", fx = 'summarize')
 
-@app.route('/scrape', methods = ['POST', 'GET'])
-def scrape():
+
+@app.route('/search', methods = ['POST', 'GET'])
+def search():
 
     # result from form 
     # <input class="link" type = "text" name = "link_input">
@@ -51,10 +34,8 @@ def scrape():
     if not query :
         return "No query provided."
 
-
     API_KEY      = 'AIzaSyCMGE74ieu9TgQb7GGRUfmMiYyA99BFgQI'
     ENGINE_ID    = 'd7cd10591edc547dd'
-
     url = f'https://www.googleapis.com/customsearch/v1?key={API_KEY}&cx={ENGINE_ID}&q={query}'
 
     # Send built url via GET
@@ -74,12 +55,14 @@ def scrape():
             "link": result.get("link"),
             "snippet": result.get("snippet")
         }
-        flash('Title  : ' + search_result['title'])
-        flash('Link : ' + search_result['link'])
-
         search_results.append(search_result)
+
+        flash('Title  : ' + search_result['title'], 'title')
+        flash('Link : ' + search_result['link'], 'link')
     
-    return render_template("index.html")
+    save_results(search_result, query)
+
+    return render_template("index.html", fx = 'search')
 
 
 if __name__ == '__main__':
