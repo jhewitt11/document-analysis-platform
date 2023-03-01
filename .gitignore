@@ -1,3 +1,7 @@
 # gitignore
 __pycache__
 settings.json
+sandbox.py
+posts.py
+newspaper_test.py
+data

@@ -1,12 +1,21 @@
 import json
 import requests
+
 from flask import Flask, render_template, jsonify, request, flash
 
-from  tools import get_summary, save_results
+from tools import get_summary
+from tools import save_results
+from tools import read_dictionary
+from tools import save_dictionary
+
 
 app = Flask(__name__)
 app.secret_key = "chauncey_billups_lasagna_turkey"
 
+settings_dict = read_dictionary('settings.json')
+
+API_KEY     = settings_dict['API_KEY']
+ENGINE_ID   = settings_dict['ENGINE_ID']
 
 @app.route("/")
 def index():
@@ -34,8 +43,6 @@ def search():
     if not query :
         return "No query provided."
 
-    API_KEY      = 'AIzaSyCMGE74ieu9TgQb7GGRUfmMiYyA99BFgQI'
-    ENGINE_ID    = 'd7cd10591edc547dd'
     url = f'https://www.googleapis.com/customsearch/v1?key={API_KEY}&cx={ENGINE_ID}&q={query}'
 
     # Send built url via GET
@@ -60,7 +67,7 @@ def search():
         flash('Title  : ' + search_result['title'], 'title')
         flash('Link : ' + search_result['link'], 'link')
     
-    save_results(search_result, query)
+    save_results(search_results, query)
 
     return render_template("index.html", fx = 'search')
 
