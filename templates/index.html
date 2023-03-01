@@ -19,5 +19,21 @@
 				<p> {{message}} </p><br>
 			{% endfor %}
 		</form>
+		<br>
+		<hr>
+		<h1> Scrape </h1>
+		<!-- New scrape form-->
+		<form action = "scrape" method = "post">
+			<h1> Search : </h1>
+			<input class="link" type = "text" name = "search_input">
+			<br>
+			<input class="button" type = "submit" value = "Google Search" id = "greet">
+			{% for message in get_flashed_messages()%}
+				<p> {{message}} </p>
+				<br>
+				<hr>
+			{% endfor %}
+		</form>
+
 	</body>
 </html>
