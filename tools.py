@@ -46,21 +46,15 @@ def get_summary(url):
     return title, summary
 
 
-def save_results(built_dict, query):
+def save_google_results(result_dict, directory = ''):
 
-    DATE = str(date.today())
-    t = time.localtime()
-    CURRENT_TIME = time.strftime("_%H_%M_%S", t)
+    query = result_dict['query']
+    date = result_dict['date']
+    time = result_dict['time']
 
-    query_d = {
+    location = directory + query +'_'+date+'_'+time + '.json'
 
-        'query' : query,
-        'date' : DATE,
-        'time' : CURRENT_TIME,
-        'results' : search_results
-    }
-
-    save_dictionary(query_d, 'data/'+query+CURRENT_TIME+'.json')
+    save_dictionary(result_dict, location)
 
     return
 
@@ -69,7 +63,7 @@ def search_google(query, number_pages):
 
     DATE = str(date.today())
     t = time.localtime()
-    CURRENT_TIME = time.strftime("%H_%M_%S", t)
+    CURRENT_TIME = time.strftime("%H-%M-%S", t)
 
     settings_dict = read_dictionary('settings.json')
     API_KEY     = settings_dict['API_KEY']
@@ -113,15 +107,14 @@ def search_google(query, number_pages):
 
             search_results.append(search_result)
 
-        number_of_results = response.json().get('searchInformation').get('totalResults')
+        totalResults = response.json().get('searchInformation').get('totalResults')
         searchTime = response.json().get('searchInformation').get('searchTime')
 
         query_d = {
-
             'query' : query,
             'date' : DATE,
             'time' : CURRENT_TIME,
-            'totalResults' : number_of_results,
+            'totalResults' : totalResults,
             'searchTime' : searchTime,
             'results' : search_results
         }

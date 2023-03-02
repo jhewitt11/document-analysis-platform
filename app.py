@@ -5,7 +5,7 @@ from flask import Flask, render_template, jsonify, request, flash
 
 from tools import get_summary
 from tools import search_google
-from tools import save_results
+from tools import save_google_results
 from tools import read_dictionary
 from tools import save_dictionary
 
@@ -40,23 +40,13 @@ def search():
     if not query :
         return "No query provided."
 
-    search_results = search_google(query, 2)
+
+    result_dict = search_google(query, 3)
     
-    save_results(search_results, query)
+    save_google_results(result_dict, 'data/')
 
     return render_template("index.html", fx = 'search')
 
 
 if __name__ == '__main__':
     app.run()
-    
-'''
-# for txt file input
-    if request.method == 'POST':
-        f = request.files['file']       
-        url = f.read()
-        url = url.decode('utf-8')
-'''
-
-#for txt file input    
-#    return jsonify({'article_title': TITLE, 'article_summary' : SUMMARY})
