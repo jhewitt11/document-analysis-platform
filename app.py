@@ -4,6 +4,7 @@ import requests
 from flask import Flask, render_template, jsonify, request, flash
 
 from tools import get_summary
+from tools import search_google
 from tools import save_results
 from tools import read_dictionary
 from tools import save_dictionary
@@ -12,10 +13,6 @@ from tools import save_dictionary
 app = Flask(__name__)
 app.secret_key = "chauncey_billups_lasagna_turkey"
 
-settings_dict = read_dictionary('settings.json')
-
-API_KEY     = settings_dict['API_KEY']
-ENGINE_ID   = settings_dict['ENGINE_ID']
 
 @app.route("/")
 def index():
@@ -43,29 +40,7 @@ def search():
     if not query :
         return "No query provided."
 
-    url = f'https://www.googleapis.com/customsearch/v1?key={API_KEY}&cx={ENGINE_ID}&q={query}'
-
-    # Send built url via GET
-    response = requests.get(url)
-    if response.status_code != 200:
-        return "Error querying Google Search."
-    
-    results = response.json().get('items')
-    if not results:
-        return "No results found."
-
-    # Extract relevant data from the search results
-    search_results = []
-    for result in results:
-        search_result = {
-            "title": result.get("title"),
-            "link": result.get("link"),
-            "snippet": result.get("snippet")
-        }
-        search_results.append(search_result)
-
-        flash('Title  : ' + search_result['title'], 'title')
-        flash('Link : ' + search_result['link'], 'link')
+    search_results = search_google(query, 2)
     
     save_results(search_results, query)
 
