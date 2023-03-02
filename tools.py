@@ -70,6 +70,7 @@ def search_google(query, number_pages):
     ENGINE_ID   = settings_dict['ENGINE_ID']
 
     search_results = []
+    failed_extractions = []
     for k in range(number_pages):
 
         start_index = 1 + (k*10)
@@ -95,17 +96,26 @@ def search_google(query, number_pages):
             except:
                 print('error')
 
-            search_result = {
-                "title":        result.get("title"),
-                "link":         result.get("link"),
-                "displayLink" : result.get("displayLink"),
-                "text":         article.text,
-                "snippet":      result.get("snippet"),
-                #"pagemap":      result.get("pagemap"),
-                "index":        start_index + num,
-            }
+            if article.text != '':
 
-            search_results.append(search_result)
+                search_result = {
+                    "title":        result.get("title"),
+                    "link":         result.get("link"),
+                    "displayLink" : result.get("displayLink"),
+                    "text":         article.text,
+                    "snippet":      result.get("snippet"),
+                    #"pagemap":      result.get("pagemap"),
+                    "index":        start_index + num,
+                }
+                search_results.append(search_result)
+            else:
+                failed_result  = {
+                    "title":        result.get("title"),
+                    "link":         result.get("link"),
+                    "displayLink" : result.get("displayLink"),
+                    "index":        start_index + num,
+                }
+                failed_extractions.append(failed_result)
 
         totalResults = response.json().get('searchInformation').get('totalResults')
         searchTime = response.json().get('searchInformation').get('searchTime')
@@ -116,7 +126,8 @@ def search_google(query, number_pages):
             'time' : CURRENT_TIME,
             'totalResults' : totalResults,
             'searchTime' : searchTime,
-            'results' : search_results
+            'results' : search_results,
+            'failedExtractions' : failed_extractions
         }
 
     return query_d

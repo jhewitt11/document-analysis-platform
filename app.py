@@ -41,7 +41,7 @@ def search():
         return "No query provided."
 
 
-    result_dict = search_google(query, 3)
+    result_dict = search_google(query, 2)
     
     save_google_results(result_dict, 'data/')
 
