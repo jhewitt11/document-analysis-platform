@@ -2,6 +2,8 @@ import json
 import requests
 import time
 
+from flask import flash
+
 from datetime import date
 from newspaper import Article
 
@@ -47,6 +49,9 @@ def get_summary(url):
 
 
 def save_google_results(result_dict, directory = ''):
+    '''
+    Save results dictionary from search_google() in a consistent format.
+    '''
 
     query = result_dict['query']
     date = result_dict['date']
@@ -60,6 +65,21 @@ def save_google_results(result_dict, directory = ''):
 
 
 def search_google(query, number_pages):
+    '''
+    Build dictionary from results of google query.
+
+    Returns :
+        query_d = {
+            'query' : query,
+            'date' : DATE,
+            'time' : CURRENT_TIME,
+            'totalResults' : totalResults, 
+            'searchTime' : searchTime,
+            'results' : search_results,
+            'failedExtractions' : failed_extractions
+        }
+    '''
+
 
     DATE = str(date.today())
     t = time.localtime()
@@ -131,3 +151,26 @@ def search_google(query, number_pages):
         }
 
     return query_d
+
+
+def flash_results(result_dict):
+    '''
+    query_d = {
+        'query' : query,
+        'date' : DATE,
+        'time' : CURRENT_TIME,
+        'totalResults' : totalResults, 
+        'searchTime' : searchTime,
+        'results' : search_results,
+        'failedExtractions' : failed_extractions
+    }
+    '''
+
+    search_results = result_dict['results']
+
+    for rd in search_results :
+        flash("Title : " + rd['title'], 'title')
+        flash("Source : " + rd['displayLink'], 'link')
+
+    return
+
