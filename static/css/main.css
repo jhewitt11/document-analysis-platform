@@ -1,3 +1,21 @@
+.header {
+	background-color: whitesmoke;
+	margin: 20;
+	padding: 3;
+}
+
+.header ul{
+	list-style-type: none;
+	margin: 0;
+	padding: 3;
+	text-align : left;
+
+	font-size : 20px;
+	font-family : 'Consolas';
+}
+
+
+
 body {
 	background-color : whitesmoke;
 	text-align : center;
@@ -9,8 +27,13 @@ img {
 
 
 h1{
-	font-size : 16px;
+	font-size : 20px;
 	font-family : "Consolas";
+}
+
+h2{
+	font-size : 16px;
+	font-family : 'Consolas';
 }
 
 input.link {

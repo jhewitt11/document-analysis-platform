@@ -2,18 +2,23 @@
 <html>
 	<head>
 		<meta charset = "UTF-8">
-		<title> Summarizer </title>
+		<title> Data Engine </title>
 		<link rel = "stylesheet" href="{{
 		url_for('static', filename='css/main.css')}}">	
 	</head>
-	
+
+	<div class = "header">
+		<ul>
+			<li><a href="/">Home</a></li>
+		</ul>
+	</div>
+
 	<body>
 		<img src = "https://drive.tiny.cloud/1/sslbrdzhdf0bkymqpwnkjqu0ueb94p3bd5ybyqscw7tsjk36/cd82ea98-94a2-471e-9a50-01afb4a2197a" alt="Newspaper Headline Image">
 		<br>
 		<form action = "summarize" method = "post">
-			<h1> Enter article link : </h1>
+			<h1> Link To Summarize : </h1>
 			<input class="link" type = "text" name = "link_input">
-			<br>
 			<input class="button" type = "submit" value = "Take a Peak" id = "greet">
 			
 			{% if fx == 'summarize' %}
@@ -29,19 +34,20 @@
 		<form action = "search" method = "post">
 			<h1> Search : </h1>
 			<input class="link" type = "text" name = "search_input">
-			<br>
 			<input class="button" type = "submit" value = "Submit" id = "greet">
 
 			{% if fx == 'search' %}
-
+				<hr>
+				<h2> Results : </h2>
+				<ul>
 				{% for category, message in get_flashed_messages(with_categories=True)%}
 					{% if category  == 'title' %}
-						<hr><br><p> {{message}} </p>
+						<li> {{message}} </li>
 					{% elif category  == 'link' %}
-						<br><p>{{message}}</p>
+						<li> {{message}} </li>
 					{% endif%}
 				{% endfor %}
-
+				</ul>
 			{% endif %}
 
 		</form>

@@ -147,7 +147,7 @@ def search_google(query, number_pages):
             'totalResults' : totalResults,
             'searchTime' : searchTime,
             'results' : search_results,
-            'failedExtractions' : failed_extractions
+            'failedResults' : failed_extractions
         }
 
     return query_d
@@ -155,15 +155,7 @@ def search_google(query, number_pages):
 
 def flash_results(result_dict):
     '''
-    query_d = {
-        'query' : query,
-        'date' : DATE,
-        'time' : CURRENT_TIME,
-        'totalResults' : totalResults, 
-        'searchTime' : searchTime,
-        'results' : search_results,
-        'failedExtractions' : failed_extractions
-    }
+    See search_google() for dictionary format.
     '''
 
     search_results = result_dict['results']
