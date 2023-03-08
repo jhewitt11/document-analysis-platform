@@ -5,3 +5,4 @@ sandbox.py
 posts.py
 newspaper_test.py
 data
+*.docx
