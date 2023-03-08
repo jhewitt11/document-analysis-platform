@@ -1,6 +1,7 @@
 
 from .general import read_dictionary
 from .general import save_dictionary
+from .general import query_list
 
 from .summary import get_summary
 
