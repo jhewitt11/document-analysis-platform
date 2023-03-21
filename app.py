@@ -37,6 +37,8 @@ def summarize():
     return render_template("index.html", fx = 'summarize')
 
 
+
+
 @app.route('/search', methods = ['POST', 'GET'])
 def search():
 
@@ -66,6 +68,9 @@ def NER_list_data():
 
     return render_template('NER.html', fx = 'NER_list_data')
 
+
+
+
 @app.route("/NER_list_documents", methods = ['POST'])
 def NER_list_documents():
     
@@ -77,12 +82,16 @@ def NER_list_documents():
     for i, result in enumerate(qd['results']):
         flash('#'+str(i)+'___'+result['title'] +'___' +result['displayLink'])
   
-    return  render_template('NER.html', fx = 'NER_list_documents')
+    return  render_template('NER.html', fx = 'NER_list_documents', query_num = query_num)
+
+
+
+
 
 @app.route("/NER_compare_documents", methods = ['POST'])
 def NER_compare_documents():
 
-    return
+    return render_template('NER.html', fx = 'NER_compare_documents')
     
 
 

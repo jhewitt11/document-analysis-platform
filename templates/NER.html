@@ -23,48 +23,74 @@
 		<form action = "NER_list_data" method = "post">
 			<input class="button" type = "submit" value = "View Queries" id = "greet">
 		</form>	
-		<div class = 'scroller'>
-			
-			{% if fx == 'NER_list_data' %}
+		
+		{% if fx == 'NER_list_data' %}
+			<div class = 'scroller'>
 				{% for message in get_flashed_messages()%}
 						{{message}} 
 						<br>
 				{% endfor %}
-			{% endif %}
-
-		</div>
+			</div>
+		{% endif %}
 		<hr>
 
 		<form action = "NER_list_documents" method = "post">
 			<input class="link" type = "text" name = "query_number_input">
 			<input class="button" type = "submit" value = "Submit Query #" id = "greet">
 		</form>
-		<div class = 'scroller'>
 	
-			{% if fx == 'NER_list_documents' %}
+		{% if fx == 'NER_list_documents' %}
+			<h2> Results for query # {{query_num}} </h2>
+			<div class = 'scroller'>
+
 				{% for message in get_flashed_messages()%}
 						{{message}} 
 						<br>
 				{% endfor %}
-			{% endif %}
+			</div>
+		{% endif %}
 
-		</div>
+
 		<hr>
 
 		<form action = "NER_compare_documents" method = "post">
 			<input class="link" type = "text" name = "document_numbers">
 			<input class="button" type = "submit" value = "Submit Document #s" id = "greet">
 		</form>
-		<div class = 'scroller'>
-	
-			{% if fx == 'NER_list_documents' %}
-				{% for message in get_flashed_messages()%}
-						{{message}} 
-						<br>
-				{% endfor %}
-			{% endif %}
 
-		</div>
+	
+		{% if fx == 'NER_compare_documents' %}
+		
+			<div>
+			  <canvas id="myChart"></canvas>
+			</div>
+
+			<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+			<script>
+			  const ctx = document.getElementById('myChart');
+
+			  new Chart(ctx, {
+			    type: 'bar',
+			    data: {
+			      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+			      datasets: [{
+			        label: '# of Votes',
+			        data: [12, 19, 3, 5, 2, 3],
+			        borderWidth: 1
+			      }]
+			    },
+			    options: {
+			      scales: {
+			        y: {
+			          beginAtZero: true
+			        }
+			      }
+			    }
+			  });
+			</script>
+
+		{% endif %}
 
 	</body>
 </html>
