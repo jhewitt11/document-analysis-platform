@@ -1,5 +1,6 @@
 import json
 import requests
+import re
 
 from flask import Flask, render_template, jsonify, request, flash
 
@@ -10,9 +11,7 @@ import tools
 app = Flask(__name__)
 app.secret_key = "chauncey_billups_lasagna_turkey"
 
-'''
-Navigation
-'''
+'''Navigation'''
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -22,9 +21,7 @@ def NER_page():
     return render_template("NER.html")
 
 
-'''
-Home page functions
-'''
+'''Home page functions'''
 @app.route('/summarize', methods = ['POST', 'GET'])
 def summarize():
 
@@ -55,9 +52,7 @@ def search():
     return render_template("index.html", fx = 'search')
 
 
-'''
-NER page functions
-'''
+'''NER page functions'''
 @app.route("/NER_list_data", methods = ['POST'])
 def NER_list_data():
 
@@ -91,7 +86,15 @@ def NER_list_documents():
 @app.route("/NER_compare_documents", methods = ['POST'])
 def NER_compare_documents():
 
-    return render_template('NER.html', fx = 'NER_compare_documents')
+    query_num = int(request.form['query_num'])
+    
+    doc_num_string = request.form['document_numbers']
+    doc_nums = [int(s) for s in re.findall(r'\d+', doc_num_string) ]
+
+    chart_data = tools.NER_build_result_dictionary(query_num, doc_nums)
+
+
+    return render_template('NER.html', chart_data = chart_data, fx = 'NER_compare_documents')
     
 
 

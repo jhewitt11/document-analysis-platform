@@ -4,7 +4,7 @@
 		<meta charset = "UTF-8">
 		<title> Data Engine </title>
 		<link rel = "stylesheet" href="{{
-		url_for('static', filename='css/main.css')}}">	
+		url_for('static', filename='css/main3.css')}}">	
 	</head>
 
 	<div class = "header">
@@ -54,14 +54,17 @@
 		<hr>
 
 		<form action = "NER_compare_documents" method = "post">
+			<h2> Last query # was {{query_num}} </h2>
+			<input name="query_num" id="query_num" value={{query_num}}>
+
 			<input class="link" type = "text" name = "document_numbers">
 			<input class="button" type = "submit" value = "Submit Document #s" id = "greet">
 		</form>
 
 	
 		{% if fx == 'NER_compare_documents' %}
-		
-			<div>
+
+			<div class="chart-container">
 			  <canvas id="myChart"></canvas>
 			</div>
 
@@ -70,16 +73,11 @@
 			<script>
 			  const ctx = document.getElementById('myChart');
 
+			  let chart_data = JSON.parse('{{chart_data | tojson}}');
+
 			  new Chart(ctx, {
 			    type: 'bar',
-			    data: {
-			      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-			      datasets: [{
-			        label: '# of Votes',
-			        data: [12, 19, 3, 5, 2, 3],
-			        borderWidth: 1
-			      }]
-			    },
+			    data: chart_data,
 			    options: {
 			      scales: {
 			        y: {

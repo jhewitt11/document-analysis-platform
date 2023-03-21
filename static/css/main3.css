@@ -46,6 +46,13 @@ img {
 	margin : auto;
 }
 
+.chart-container{
+	position: relative;
+	width: 95vw;
+}
+
+
+
 /*
 body {
 	line-height: 1.5;
