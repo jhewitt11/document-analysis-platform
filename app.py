@@ -10,16 +10,21 @@ import tools
 app = Flask(__name__)
 app.secret_key = "chauncey_billups_lasagna_turkey"
 
-
+'''
+Navigation
+'''
 @app.route("/")
 def index():
     return render_template("index.html")
 
-@app.route("/NER")
-def NER():
+@app.route("/NER_page")
+def NER_page():
     return render_template("NER.html")
 
 
+'''
+Home page functions
+'''
 @app.route('/summarize', methods = ['POST', 'GET'])
 def summarize():
 
@@ -46,6 +51,40 @@ def search():
     tools.flash_results(result_dict)
 
     return render_template("index.html", fx = 'search')
+
+
+'''
+NER page functions
+'''
+@app.route("/NER_list_data", methods = ['POST'])
+def NER_list_data():
+
+    query_results = tools.query_list()[1:]
+
+    for i, result in enumerate(query_results):
+        flash('#'+str(i)+'   '+result)
+
+    return render_template('NER.html', fx = 'NER_list_data')
+
+@app.route("/NER_list_documents", methods = ['POST'])
+def NER_list_documents():
+    
+    query_num = int(request.form['query_number_input'])
+    query_results = tools.query_list()[1:]
+    dictionary_name = query_results[query_num]
+
+    qd = tools.read_dictionary('data/'+dictionary_name)
+    for i, result in enumerate(qd['results']):
+        flash('#'+str(i)+'___'+result['title'] +'___' +result['displayLink'])
+  
+    return  render_template('NER.html', fx = 'NER_list_documents')
+
+@app.route("/NER_compare_documents", methods = ['POST'])
+def NER_compare_documents():
+
+    return
+    
+
 
 
 if __name__ == '__main__':

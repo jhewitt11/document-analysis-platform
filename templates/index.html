@@ -1,57 +1,67 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset = "UTF-8">
-		<title> Data Engine </title>
-		<link rel = "stylesheet" href="{{
-		url_for('static', filename='css/main.css')}}">	
-	</head>
+<meta charset = "UTF-8">
+<title> Data Engine </title>
+<link rel = "stylesheet" href="{{url_for('static', filename='css/main3.css')}}">	
 
-	<div class = "header">
-		<ul>
-			<li><a href="/">Home</a></li>
-			<li><a href="/NER">NER</a></li>
-		</ul>
-	</div>
 
-	<body>
-		<img src = "https://drive.tiny.cloud/1/sslbrdzhdf0bkymqpwnkjqu0ueb94p3bd5ybyqscw7tsjk36/cd82ea98-94a2-471e-9a50-01afb4a2197a" alt="Newspaper Headline Image">
-		<br>
-		<form action = "summarize" method = "post">
-			<h1> Link To Summarize : </h1>
-			<input class="link" type = "text" name = "link_input">
-			<input class="button" type = "submit" value = "Take a Peak" id = "greet">
-			
-			{% if fx == 'summarize' %}
-				{% for message in get_flashed_messages()%}
-					<p> {{message}} </p><br>
-				{% endfor %}
-			{% endif %}
+<div class="header">
+	<ul>
+		<li><a href="/">Home</a></li>
+		<li><a href="/NER_page">NER</a></li>
+		<li>Empty</li>
+	</ul>
+</div>
 
-		</form>
-		<br>
+<img src = "https://drive.tiny.cloud/1/sslbrdzhdf0bkymqpwnkjqu0ueb94p3bd5ybyqscw7tsjk36/cd82ea98-94a2-471e-9a50-01afb4a2197a" alt="Newspaper Headline Image">
+
+<main class="main">
+
+		<div class = 'content-header'>
+			<h2>Summarize</h2>
+			<p>Enter a URL and take a peak.</p>
+		</div>
+		<div class = 'content'>	
+			<form action = "summarize" method = "post">
+				<input class="link" type = "text" name = "link_input">
+				<input class="button" type = "submit" value = "Take a Peak" id = "greet">
+				
+				{% if fx == 'summarize' %}
+					{% for message in get_flashed_messages()%}
+						<p> {{message}} </p><br>
+					{% endfor %}
+				{% endif %}
+
+			</form>
+		</div>
+
 		<hr>
-		<!-- New scrape form-->
-		<form action = "search" method = "post">
-			<h1> Search : </h1>
-			<input class="link" type = "text" name = "search_input">
-			<input class="button" type = "submit" value = "Submit" id = "greet">
-
+		
+		<div class = 'content-header'>
+			<h2> Seek And Store</h2>
+			<p>Search the web for a query and store the results.</p>
+		</div>
+		<div class = 'content'>
+			<form action = "search" method = "post">
+				<input class="link" type = "text" name = "search_input">
+				<input class="button" type = "submit" value = "Submit" id = "greet">
+			</form>
 			{% if fx == 'search' %}
 				<hr>
 				<h2> Results : </h2>
-				<ul>
-				{% for category, message in get_flashed_messages(with_categories=True)%}
-					{% if category  == 'title' %}
-						<li> {{message}} </li>
-					{% elif category  == 'link' %}
-						<li> {{message}} </li>
-					{% endif%}
-				{% endfor %}
-				</ul>
+				<div class = 'scroller'>
+					<ul>
+						{% for category, message in get_flashed_messages(with_categories=True)%}
+							{% if category  == 'title' %}
+								<li> {{message}} </li>
+							{% elif category  == 'link' %}
+								<li> {{message}} </li>
+								<br>
+							{% endif%}
+						{% endfor %}
+					</ul>
+				</div>
 			{% endif %}
-
-		</form>
-
-	</body>
+		</div>
+</main>
 </html>

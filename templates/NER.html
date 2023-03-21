@@ -10,7 +10,7 @@
 	<div class = "header">
 		<ul>
 			<li><a href="/">Home</a></li>
-			<li><a href="/NER">NER</a></li>
+			<li><a href="/NER_page">NER</a></li>
 		</ul>
 	</div>
 
@@ -18,6 +18,53 @@
 		<img src = "https://drive.tiny.cloud/1/sslbrdzhdf0bkymqpwnkjqu0ueb94p3bd5ybyqscw7tsjk36/cd82ea98-94a2-471e-9a50-01afb4a2197a" alt="Newspaper Headline Image">
 		<br>
 		<h1>Named Entity Recognition</h1>
+		<hr>
+		
+		<form action = "NER_list_data" method = "post">
+			<input class="button" type = "submit" value = "View Queries" id = "greet">
+		</form>	
+		<div class = 'scroller'>
+			
+			{% if fx == 'NER_list_data' %}
+				{% for message in get_flashed_messages()%}
+						{{message}} 
+						<br>
+				{% endfor %}
+			{% endif %}
+
+		</div>
+		<hr>
+
+		<form action = "NER_list_documents" method = "post">
+			<input class="link" type = "text" name = "query_number_input">
+			<input class="button" type = "submit" value = "Submit Query #" id = "greet">
+		</form>
+		<div class = 'scroller'>
+	
+			{% if fx == 'NER_list_documents' %}
+				{% for message in get_flashed_messages()%}
+						{{message}} 
+						<br>
+				{% endfor %}
+			{% endif %}
+
+		</div>
+		<hr>
+
+		<form action = "NER_compare_documents" method = "post">
+			<input class="link" type = "text" name = "document_numbers">
+			<input class="button" type = "submit" value = "Submit Document #s" id = "greet">
+		</form>
+		<div class = 'scroller'>
+	
+			{% if fx == 'NER_list_documents' %}
+				{% for message in get_flashed_messages()%}
+						{{message}} 
+						<br>
+				{% endfor %}
+			{% endif %}
+
+		</div>
 
 	</body>
 </html>
