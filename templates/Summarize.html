@@ -19,16 +19,13 @@
 <h2>Summarize</h2>
 <p>Enter a URL and take a peak.</p>
 
-<div class = 'content'>	
-	<form action = "summarize" method = "post">
-		<input class="link" type = "text" name = "link_input">
-		<input class="button" type = "submit" value = "Take a Peak" id = "greet">
-		
-		{% if fx == 'summarize' %}
-			{% for message in get_flashed_messages()%}
-				<p> {{message}} </p><br>
-			{% endfor %}
-		{% endif %}
-
-	</form>
-</div>
+<form action = "summarize_article" method = "post">
+	<input class="link" type = "text" name = "link_input">
+	<input class="button" type = "submit" value = "Take a Peak" id = "greet">
+	
+	{% if fx == 'summarize' %}
+		{% for message in get_flashed_messages()%}
+			<p> {{message}} </p><br>
+		{% endfor %}
+	{% endif %}
+</form>

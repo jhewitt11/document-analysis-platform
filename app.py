@@ -45,7 +45,7 @@ def search():
 
 
 '''Summarize page functions '''
-@app.route('/summarize', methods = ['POST', 'GET'])
+@app.route('/summarize_article', methods = ['POST', 'GET'])
 def summarize():
 
     url = str(request.form['link_input'])
@@ -54,7 +54,7 @@ def summarize():
     flash("Title : " + TITLE)
     flash("Summary : " + SUMMARY)
     
-    return render_template("index.html", fx = 'summarize')
+    return render_template("Summarize.html", fx = 'summarize')
 
 
 
