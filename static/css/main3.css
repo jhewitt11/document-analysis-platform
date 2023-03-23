@@ -46,19 +46,13 @@ img {
 	margin : auto;
 }
 
+.scroller {
+	overflow:	 	scroll; 
+	height:			300px;
+}
+
 .chart-container{
 	position: relative;
 	width: 95vw;
 }
 
-
-
-/*
-body {
-	line-height: 1.5;
-	min-height: 100vh;
-	font-family: "Be Vietnam Pro", sans-serif;
-	background-color: var(--c-background-secondary);
-	color: var(--c-text-primary);
-}
-*/

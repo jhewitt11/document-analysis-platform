@@ -7,7 +7,6 @@ from flask import Flask, render_template, jsonify, request, flash
 import tools
 
 
-
 app = Flask(__name__)
 app.secret_key = "chauncey_billups_lasagna_turkey"
 
@@ -16,26 +15,18 @@ app.secret_key = "chauncey_billups_lasagna_turkey"
 def index():
     return render_template("index.html")
 
-@app.route("/NER_page")
+
+@app.route("/Summarize")
+def Summarize_page():
+    return render_template("Summarize.html")
+
+
+@app.route("/NER")
 def NER_page():
     return render_template("NER.html")
 
 
 '''Home page functions'''
-@app.route('/summarize', methods = ['POST', 'GET'])
-def summarize():
-
-    url = str(request.form['link_input'])
-    TITLE, SUMMARY = tools.get_summary(url)
-     
-    flash("Title : " + TITLE)
-    flash("Summary : " + SUMMARY)
-    
-    return render_template("index.html", fx = 'summarize')
-
-
-
-
 @app.route('/search', methods = ['POST', 'GET'])
 def search():
 
@@ -52,6 +43,21 @@ def search():
     return render_template("index.html", fx = 'search')
 
 
+
+'''Summarize page functions '''
+@app.route('/summarize', methods = ['POST', 'GET'])
+def summarize():
+
+    url = str(request.form['link_input'])
+    TITLE, SUMMARY = tools.get_summary(url)
+     
+    flash("Title : " + TITLE)
+    flash("Summary : " + SUMMARY)
+    
+    return render_template("index.html", fx = 'summarize')
+
+
+
 '''NER page functions'''
 @app.route("/NER_list_data", methods = ['POST'])
 def NER_list_data():
@@ -62,8 +68,6 @@ def NER_list_data():
         flash('#'+str(i)+'   '+result)
 
     return render_template('NER.html', fx = 'NER_list_data')
-
-
 
 
 @app.route("/NER_list_documents", methods = ['POST'])
@@ -80,9 +84,6 @@ def NER_list_documents():
     return  render_template('NER.html', fx = 'NER_list_documents', query_num = query_num)
 
 
-
-
-
 @app.route("/NER_compare_documents", methods = ['POST'])
 def NER_compare_documents():
 
@@ -94,10 +95,8 @@ def NER_compare_documents():
     chart_data = tools.NER_build_result_dictionary(query_num, doc_nums)
 
 
-    return render_template('NER.html', chart_data = chart_data, fx = 'NER_compare_documents')
+    return render_template('NER.html', query_num = query_num, chart_data = chart_data, fx = 'NER_compare_documents')
     
-
-
 
 if __name__ == '__main__':
     app.run()

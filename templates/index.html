@@ -8,35 +8,15 @@
 <div class="header">
 	<ul>
 		<li><a href="/">Home</a></li>
-		<li><a href="/NER_page">NER</a></li>
-		<li>Empty</li>
+		<li><a href="/NER">NER</a></li>
+		<li><a href="/Summarize">Summarize</a></li>
 	</ul>
 </div>
 
 <img src = "https://drive.tiny.cloud/1/sslbrdzhdf0bkymqpwnkjqu0ueb94p3bd5ybyqscw7tsjk36/cd82ea98-94a2-471e-9a50-01afb4a2197a" alt="Newspaper Headline Image">
 
 <main class="main">
-
-		<div class = 'content-header'>
-			<h2>Summarize</h2>
-			<p>Enter a URL and take a peak.</p>
-		</div>
-		<div class = 'content'>	
-			<form action = "summarize" method = "post">
-				<input class="link" type = "text" name = "link_input">
-				<input class="button" type = "submit" value = "Take a Peak" id = "greet">
-				
-				{% if fx == 'summarize' %}
-					{% for message in get_flashed_messages()%}
-						<p> {{message}} </p><br>
-					{% endfor %}
-				{% endif %}
-
-			</form>
-		</div>
-
-		<hr>
-		
+	
 		<div class = 'content-header'>
 			<h2> Seek And Store</h2>
 			<p>Search the web for a query and store the results.</p>
