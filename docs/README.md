@@ -3,7 +3,7 @@
 ## Contents
 - [Introduction](#introduction)
 - [Summarizer](#summarizer)
-- [SeekAndStore](#seekandstore)
+- [Seek And Store](#seek and store)
 
 ## Introduction
 This is a Flask based web site to gather news stories from the web for both individual and comparative  analysis. 
