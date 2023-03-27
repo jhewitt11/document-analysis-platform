@@ -6,7 +6,7 @@
 - [SearchAndScrape](#searchandscrape)
 
 ## Introduction
-This is a Flask based web site to gather news stories from the web and analyze them both individually and comparatively. 
+This is a Flask based web site to gather news stories from the web for both individual and comparative  analysis. 
 
 More features will be added over time to make this a tool for both data visualization and automating ETL processes. 
 
