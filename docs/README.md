@@ -3,7 +3,7 @@
 ## Contents
 - [Introduction](#introduction)
 - [Summarizer](#summarizer)
-- [SearchAndScrape](#searchandscrape)
+- [SeekAndStore](#seekandstore)
 
 ## Introduction
 This is a Flask based web site to gather news stories from the web for both individual and comparative  analysis. 
@@ -17,7 +17,7 @@ Input a URL and read a summary of the text before.
 - newspaper3k library handles both scraping and summarization
 
 
-## SearchAndScrape
+## Seek and Store
 Use google search API to return search results for a query, scrape the URLs for text, combine then save the data in a JSON file.
 
 #### Query Result Data
