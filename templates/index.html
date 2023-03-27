@@ -1,47 +1,38 @@
-<!DOCTYPE html>
-<html>
-<meta charset = "UTF-8">
-<title> Data Engine </title>
-<link rel = "stylesheet" href="{{url_for('static', filename='css/main3.css')}}">	
+{% extends "base.html" %}
 
+{% block main %}
 
-<div class="header">
-	<ul>
-		<li><a href="/">Home</a></li>
-		<li><a href="/NER">NER</a></li>
-		<li><a href="/Summarize">Summarize</a></li>
-	</ul>
+	
+<div class = 'content-header'>
+	<h2> Seek And Store</h2>
+	<p>Search the web for a query and store the results.</p>
 </div>
 
-<img src = "https://drive.tiny.cloud/1/sslbrdzhdf0bkymqpwnkjqu0ueb94p3bd5ybyqscw7tsjk36/cd82ea98-94a2-471e-9a50-01afb4a2197a" alt="Newspaper Headline Image">
-
-<main class="main">
 	
-		<div class = 'content-header'>
-			<h2> Seek And Store</h2>
-			<p>Search the web for a query and store the results.</p>
-		</div>
-		<div class = 'content'>
-			<form action = "search" method = "post">
-				<input class="link" type = "text" name = "search_input">
-				<input class="button" type = "submit" value = "Submit" id = "greet">
-			</form>
-			{% if fx == 'search' %}
-				<hr>
-				<h2> Results : </h2>
-				<div class = 'scroller'>
-					<ul>
-						{% for category, message in get_flashed_messages(with_categories=True)%}
-							{% if category  == 'title' %}
-								<li> {{message}} </li>
-							{% elif category  == 'link' %}
-								<li> {{message}} </li>
-								<br>
-							{% endif%}
-						{% endfor %}
-					</ul>
-				</div>
-			{% endif %}
-		</div>
-</main>
-</html>
+<form action = "search" method = "post">
+	<input class="link" type = "text" name = "search_input">
+	<input class="button" type = "submit" value = "Submit" id = "greet">
+</form>
+
+
+{% if fx == 'search' %}
+	<hr>
+	<h2> Results : </h2>
+
+	<div class = 'scroller'>
+		<ul>
+			{% for category, message in get_flashed_messages(with_categories=True)%}
+				{% if category  == 'title' %}
+					<li> {{message}} </li>
+				{% elif category  == 'link' %}
+					<li> {{message}} </li>
+					<br>
+				{% endif%}
+			{% endfor %}
+		</ul>
+	</div>
+{% endif %}
+
+
+
+{% endblock %}

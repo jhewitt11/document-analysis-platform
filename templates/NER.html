@@ -1,92 +1,83 @@
-<!DOCTYPE html>
-<html>
-<meta charset = "UTF-8">
-<title> Data Engine </title>
-<link rel = "stylesheet" href="{{url_for('static', filename='css/main3.css')}}">	
+{% extends "base.html" %}
 
 
-<div class="header">
-	<ul>
-		<li><a href="/">Home</a></li>
-		<li><a href="/NER">NER</a></li>
-		<li><a href="/Summarize">Summarize</a></li>
-	</ul>
-</div>
-
-<body>
-	<img src = "https://drive.tiny.cloud/1/sslbrdzhdf0bkymqpwnkjqu0ueb94p3bd5ybyqscw7tsjk36/cd82ea98-94a2-471e-9a50-01afb4a2197a" alt="Newspaper Headline Image">
-	<br>
-	<h1>Named Entity Recognition</h1>
-	<hr>
-	
-	<form action = "NER_list_data" method = "post">
-		<input class="button" type = "submit" value = "View Queries" id = "greet">
-	</form>	
-	
-	{% if fx == 'NER_list_data' %}
-		<div class = 'scroller'>
-			{% for message in get_flashed_messages()%}
-					{{message}} 
-					<br>
-			{% endfor %}
-		</div>
-	{% endif %}
-	<hr>
-
-	<form action = "NER_list_documents" method = "post">
-		<input class="link" type = "text" name = "query_number_input">
-		<input class="button" type = "submit" value = "Submit Query #" id = "greet">
-	</form>
-
-	{% if fx == 'NER_list_documents' %}
-		<h2> Results for query # {{query_num}} </h2>
-		<div class = 'scroller'>
-
-			{% for message in get_flashed_messages()%}
-					{{message}} 
-					<br>
-			{% endfor %}
-		</div>
-	{% endif %}
+{% block main %}
 
 
-	<hr>
 
-	<h2> Last query # was {{query_num}} </h2>
-	<form action = "NER_compare_documents" method = "post">
-		<input name="query_num" id="query_num" value={{query_num}}>
-		<input class="link" type = "text" name = "document_numbers">
-		<input class="button" type = "submit" value = "Submit Document #s" id = "greet">
-	</form>
+<br>
+<h1>Named Entity Recognition</h1>
+<hr>
+
+<form action = "NER_list_data" method = "post">
+	<input class="button" type = "submit" value = "View Queries" id = "greet">
+</form>	
+
+{% if fx == 'NER_list_data' %}
+	<div class = 'scroller'>
+		{% for message in get_flashed_messages()%}
+				{{message}} 
+				<br>
+		{% endfor %}
+	</div>
+{% endif %}
+<hr>
+
+<form action = "NER_list_documents" method = "post">
+	<input class="link" type = "text" name = "query_number_input">
+	<input class="button" type = "submit" value = "Submit Query #" id = "greet">
+</form>
+
+{% if fx == 'NER_list_documents' %}
+	<h2> Results for query # {{query_num}} </h2>
+	<div class = 'scroller'>
+
+		{% for message in get_flashed_messages()%}
+				{{message}} 
+				<br>
+		{% endfor %}
+	</div>
+{% endif %}
 
 
-	{% if fx == 'NER_compare_documents' %}
+<hr>
 
-		<div class="chart-container">
-		  <canvas id="myChart"></canvas>
-		</div>
+<h2> Last query # was {{query_num}} </h2>
+<form action = "NER_compare_documents" method = "post">
+	<input name="query_num" id="query_num" value={{query_num}}>
+	<input class="link" type = "text" name = "document_numbers">
+	<input class="button" type = "submit" value = "Submit Document #s" id = "greet">
+</form>
 
-		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-		<script>
-		  const ctx = document.getElementById('myChart');
+{% if fx == 'NER_compare_documents' %}
 
-		  let chart_data = JSON.parse('{{chart_data | tojson}}');
+	<div class="chart-container">
+	  <canvas id="myChart"></canvas>
+	</div>
 
-		  new Chart(ctx, {
-		    type: 'bar',
-		    data: chart_data,
-		    options: {
-		      scales: {
-		        y: {
-		          beginAtZero: true
-		        }
-		      }
-		    }
-		  });
-		</script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-	{% endif %}
+	<script>
+	  const ctx = document.getElementById('myChart');
 
-</body>
-</html>
+	  let chart_data = JSON.parse('{{chart_data | tojson}}');
+
+	  new Chart(ctx, {
+	    type: 'bar',
+	    data: chart_data,
+	    options: {
+	      scales: {
+	        y: {
+	          beginAtZero: true
+	        }
+	      }
+	    }
+	  });
+	</script>
+
+{% endif %}
+
+
+
+{% endblock %}

@@ -16,35 +16,37 @@
 }
 
 
-.header ul{
+.nav-menu ul{
 	list-style-type: none;
 	overflow: hidden;
 	margin: 0;
 	padding: 0;	
 }
 
-.header li{
+.nav-menu li{
 	float : left;
 	padding: 10px;
 }
 
-.header li:hover {
+.nav-menu li:hover {
 	background-color: var(--c-background-quaternary);
 }
 
-.header li a{
+.nav-menu li a{
 	display: block;
 	text-align: center;
 	text-decoration: none;
 }
 
-
-img {
+.top-image img {
 	display: block;
 	max-width: 100%;
 	padding: 10px ;
 	margin : auto;
 }
+
+
+
 
 .scroller {
 	overflow:	 	scroll; 

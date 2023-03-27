@@ -1,17 +1,21 @@
+from flask import Flask
+from flask import render_template, jsonify, request, flash
+
 import json
 import requests
 import re
 
-from flask import Flask, render_template, jsonify, request, flash
 
 import tools
-
-
 app = Flask(__name__)
+
 app.secret_key = "chauncey_billups_lasagna_turkey"
+
+
 
 '''Navigation'''
 @app.route("/")
+@app.route("/index")
 def index():
     return render_template("index.html")
 
@@ -97,6 +101,7 @@ def NER_compare_documents():
 
     return render_template('NER.html', query_num = query_num, chart_data = chart_data, fx = 'NER_compare_documents')
     
+
 
 if __name__ == '__main__':
     app.run()
