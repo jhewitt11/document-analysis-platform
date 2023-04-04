@@ -4,6 +4,7 @@ from flask import render_template, jsonify, request, flash
 import json
 import requests
 import re
+import os
 
 
 import tools
@@ -19,15 +20,16 @@ app.secret_key = "chauncey_billups_lasagna_turkey"
 def index():
     return render_template("index.html")
 
-
 @app.route("/Summarize")
 def Summarize_page():
     return render_template("Summarize.html")
 
-
 @app.route("/NER")
 def NER_page():
-    return render_template("NER.html")
+
+    query_date_tups = tools.query_list()   
+
+    return render_template("NER.html", query_date_tups = query_date_tups)
 
 
 '''Home page functions'''
@@ -41,10 +43,17 @@ def search():
 
     result_dict = tools.search_google(query, 2)
     tools.save_google_results(result_dict, 'data/')
+    
+    search_results = result_dict['results']
 
-    tools.flash_results(result_dict)
 
-    return render_template("index.html", fx = 'search')
+    res_l = []
+    for res in search_results:
+        res_l.append((res['title'], res['displayLink']))
+
+    print(res_l)
+
+    return render_template("index.html", results = res_l, query = query, fx = 'search')
 
 
 
@@ -66,32 +75,36 @@ def summarize():
 @app.route("/NER_list_data", methods = ['POST'])
 def NER_list_data():
 
-    query_results = tools.query_list()[1:]
+    query_date_tups = tools.query_list()
 
-    for i, result in enumerate(query_results):
-        flash('#'+str(i)+'   '+result)
-
-    return render_template('NER.html', fx = 'NER_list_data')
+    return render_template('NER.html', query_date_tups = query_date_tups, fx = 'NER_list_data')
 
 
 @app.route("/NER_list_documents", methods = ['POST'])
 def NER_list_documents():
-    
+
     query_num = int(request.form['query_number_input'])
-    query_results = tools.query_list()[1:]
+    query_date_tups = tools.query_list()
+
+    query_results = os.listdir('./data')[1:]
+
     dictionary_name = query_results[query_num]
 
     qd = tools.read_dictionary('data/'+dictionary_name)
+
+
+    doc_results = []
     for i, result in enumerate(qd['results']):
-        flash('#'+str(i)+'___'+result['title'] +'___' +result['displayLink'])
+        doc_results.append((i, result['title'], result['displayLink']))
   
-    return  render_template('NER.html', fx = 'NER_list_documents', query_num = query_num)
+    return  render_template('NER.html', query_date_tups = query_date_tups, query_num = query_num, doc_results = doc_results, fx = 'NER_list_documents',)
 
 
 @app.route("/NER_compare_documents", methods = ['POST'])
 def NER_compare_documents():
 
     query_num = int(request.form['query_num'])
+    query_date_tups = tools.query_list()
     
     doc_num_string = request.form['document_numbers']
     doc_nums = [int(s) for s in re.findall(r'\d+', doc_num_string) ]
@@ -99,7 +112,7 @@ def NER_compare_documents():
     chart_data = tools.NER_build_result_dictionary(query_num, doc_nums)
 
 
-    return render_template('NER.html', query_num = query_num, chart_data = chart_data, fx = 'NER_compare_documents')
+    return render_template('NER.html', query_date_tups = query_date_tups, query_num = query_num, chart_data = chart_data, fx = 'NER_compare_documents')
     
 
 

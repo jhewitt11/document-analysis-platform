@@ -1,3 +1,5 @@
+import os
+
 from flair.data import Sentence
 from flair.nn import Classifier
 from flair.splitter import SegtokSentenceSplitter
@@ -38,7 +40,8 @@ def NER_build_result_dictionary(query_num, doc_nums):
 	Build results for chart.js visualization.
 	'''
 
-	query_result_name = query_list()[1:][query_num]
+	query_results = os.listdir('./data')[1:]
+	query_result_name = query_results[query_num]
 	query_result = read_dictionary('./data/'+query_result_name)
 
 	search_results = query_result['results']

@@ -17,19 +17,22 @@
 
 {% if fx == 'search' %}
 	<hr>
-	<h2> Results : </h2>
 
+	<h2>Results : </h2>
+	<i>{{query}}</i>
+	<br>
 	<div class = 'scroller'>
-		<ul>
-			{% for category, message in get_flashed_messages(with_categories=True)%}
-				{% if category  == 'title' %}
-					<li> {{message}} </li>
-				{% elif category  == 'link' %}
-					<li> {{message}} </li>
-					<br>
-				{% endif%}
-			{% endfor %}
-		</ul>
+		{% for title, displayLink in results%}
+				
+			<div class='container' style = 'margin-bottom:0px'>
+				<div class = 'row'>
+					<div class = 'col-10'>{{title}}</div>
+					<div class = 'col-2'>{{displayLink}}</div>
+				</div>
+			</div>
+			<hr>
+				
+		{% endfor %}
 	</div>
 {% endif %}
 

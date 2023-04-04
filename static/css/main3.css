@@ -50,7 +50,9 @@
 
 .scroller {
 	overflow:	 	scroll; 
-	height:			300px;
+	height:			600px;
+	max-width: 		1200px;
+	margin : auto
 }
 
 .chart-container{
@@ -58,3 +60,6 @@
 	width: 95vw;
 }
 
+h1{
+	margin : auto
+}
