@@ -21,14 +21,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = flask_sqlalchemy
 db = SQLAlchemy(app)
 
 
-
-
-
-
-
 '''Navigation'''
 @app.route("/")
-@app.route("/index")
+@app.route("/index")    
 def index():
     return render_template("index.html")
 
@@ -54,6 +49,9 @@ def search():
 
 
     result_dict = tools.search_google(query, 2)
+
+
+    tools.upload_new_data(result_dict)
     tools.save_google_results(result_dict, 'data/')
     
     search_results = result_dict['results']
