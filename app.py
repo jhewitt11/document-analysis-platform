@@ -1,16 +1,28 @@
 from flask import Flask
 from flask import render_template, jsonify, request, flash
 
+import flask_sqlalchemy
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+
 import json
 import requests
 import re
 import os
 
-
 import tools
-app = Flask(__name__)
 
+
+app = Flask(__name__)
 app.secret_key = "chauncey_billups_lasagna_turkey"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = flask_sqlalchemy
+
+db = SQLAlchemy(app)
+
+
+
+
 
 
 
@@ -117,4 +129,4 @@ def NER_compare_documents():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
