@@ -1,7 +1,7 @@
 from models import QueryFile, GResult
 from app import app, db
 
-from datetime import datetime
+from datetime import date, time
 import os
 import json
 
@@ -10,7 +10,7 @@ with app.app_context():
 
     file_names = os.listdir('./data')[1:]
 
-    for file in file_names[:2] :
+    for file in file_names :
         
         with open('./data/' + file) as F:
             data = json.load(F)
@@ -34,13 +34,21 @@ with app.app_context():
             TEXT = result['text']
             INDEX = result['index']
 
-            date_split = DATE.split('-')
-            py_date = datetime(int(date_split[0]), int(date_split[1]), int(date_split[2]))
+            # turn date into python date type
+            py_date = date.fromisoformat(DATE)
+
+            # turn time into python time type
+            time_split = [int(x) for x in TIME.split('-')]
+            hour = time_split[0]
+            minute = time_split[1]
+            second = time_split[2]
+
+            py_time = time(hour, minute, second)
 
             GR_entry = GResult( 
                             query = QUERY,
                             date = py_date,
-                            time = TIME,
+                            time = py_time,
                             title = TITLE,
                             link = LINK,
                             displayLink = DISPLAYLINK,
@@ -53,3 +61,4 @@ with app.app_context():
 
         QF_entry = QueryFile(name = QF_name)
         db.session.add(QF_entry)
+        db.session.commit()
