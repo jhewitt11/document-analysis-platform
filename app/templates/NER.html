@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+
+
+
+<br>
+<h1>Named Entity Recognition</h1>
+<br>
+<h3>Queries</h3>
+<br>
+{% if query_date_tups %}
+	<div class = 'scroller'>
+		{% for i, query, date in query_date_tups%}
+				
+			<div class='container' style = 'margin-bottom:0px'>
+				<div class = 'row'>
+					<div class = 'col-1'><h5>{{i}}</h5></div>
+					<div class = 'col-7'>{{query}}</div>
+					<div class = 'col-4'> Searched : {{date}}</div>
+				</div>
+			</div>
+			<hr>
+				
+		{% endfor %}
+	</div>
+{% endif %}
+<hr>
+
+<form action = "NER_list_documents" method = "post">
+	<input class="link" type = "text" name = "query_number_input">
+	<input class="button" type = "submit" value = "Submit Query #" id = "greet">
+</form>
+
+{% if fx == 'NER_list_documents' %}
+	<br>
+	<h2> Results for query #{{query_num}} </h2>
+	<br>
+	<div class = 'scroller'>
+
+		{% for i, title, link in doc_results%}
+			<div class='container' style = 'margin-bottom:0px'>
+				<div class = 'row'>
+					<div class = 'col-1'><h5>{{i}}</h5></div>
+					<div class = 'col-5'>{{title}}</div>
+					<div class = 'col-6'>{{link}}</div>
+				</div>
+			</div>
+			<hr>
+		{% endfor %}
+	</div>
+{% endif %}
+
+
+<hr>
+<br>
+<h2> Last query # was {{query_num}} </h2>
+<br>
+<form action = "NER_compare_documents" method = "post">
+	<input name="query_num" id="query_num" value={{query_num}}>
+	<input class="link" type = "text" name = "document_numbers">
+	<input class="button" type = "submit" value = "Submit Document #s" id = "greet">
+</form>
+
+
+{% if fx == 'NER_compare_documents' %}
+
+	<div class="chart-container">
+	  <canvas id="myChart"></canvas>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+	<script>
+	  const ctx = document.getElementById('myChart');
+
+	  let chart_data = JSON.parse('{{chart_data | tojson}}');
+
+	  new Chart(ctx, {
+	    type: 'bar',
+	    data: chart_data,
+	    options: {
+	      scales: {
+	        y: {
+	          beginAtZero: true
+	        }
+	      }
+	    }
+	  });
+	</script>
+
+{% endif %}
+
+
+
+{% endblock %}

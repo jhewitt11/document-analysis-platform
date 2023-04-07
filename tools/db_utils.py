@@ -1,12 +1,12 @@
-from .models import QueryFile, GResult
+from models import QueryFile, GResult
 
-#from app import app #, db
+from app import app, db
 
 from datetime import date, time
 import os
 import json
 
-db = SQLAlchemy(app)
+#db = SQLAlchemy(app)
 
 
 
