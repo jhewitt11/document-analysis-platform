@@ -1,13 +1,16 @@
-from models import QueryFile, GResult
-from app import app, db
+from .models import QueryFile, GResult
+
+#from app import app #, db
 
 from datetime import date, time
 import os
 import json
 
+db = SQLAlchemy(app)
 
 
-def upload_new_data(data):
+
+def upload_new_data(data, db):
 
     QUERY = data['query']
     DATE = data['date']
@@ -16,8 +19,9 @@ def upload_new_data(data):
     QF_name = QUERY+'_'+DATE+'_'+TIME
 
     # check if this query is in the database
-    if QueryFile.query.filter_by(name=QF_name).first() != None :
-        continue
+    test = QueryFile.query.filter_by(name=QF_name).first()
+    if test != None:
+        print(f'Error : QueryFile already exists.\n{test}')
 
     RESULTS = data['results']
     for result in RESULTS:
@@ -40,15 +44,15 @@ def upload_new_data(data):
         py_time = time(hour, minute, second)
 
         GR_entry = GResult( 
-                        query = QUERY,
-                        date = py_date,
-                        time = py_time,
-                        title = TITLE,
-                        link = LINK,
-                        displayLink = DISPLAYLINK,
-                        text = TEXT,
-                        searchIndex = INDEX,
-                        )
+            query = QUERY,
+            date = py_date,
+            time = py_time,
+            title = TITLE,
+            link = LINK,
+            displayLink = DISPLAYLINK,
+            text = TEXT,
+            searchIndex = INDEX,
+        )
 
         #print(GR_entry)
         db.session.add(GR_entry)
@@ -63,7 +67,7 @@ def upload_new_data(data):
 
 '''
 This can be run as a script to update the database with all files stored in the given directory.
-'''
+
 with app.app_context():
 
     file_names = os.listdir('./data')[1:]
@@ -120,3 +124,5 @@ with app.app_context():
         QF_entry = QueryFile(name = QF_name)
         db.session.add(QF_entry)
         db.session.commit()
+
+'''

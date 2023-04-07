@@ -10,7 +10,7 @@ from newspaper import Article
 from .general import read_dictionary
 from .general import save_dictionary
 
-from .db_utils import 
+
 
 
 def save_google_results(result_dict, directory = ''):

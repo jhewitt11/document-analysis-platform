@@ -51,7 +51,7 @@ def search():
     result_dict = tools.search_google(query, 2)
 
 
-    tools.upload_new_data(result_dict)
+    tools.upload_new_data(result_dict, db)
     tools.save_google_results(result_dict, 'data/')
     
     search_results = result_dict['results']
