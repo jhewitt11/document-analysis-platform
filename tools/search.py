@@ -10,6 +10,7 @@ from newspaper import Article
 from .general import read_dictionary
 from .general import save_dictionary
 
+from .clean import clean_text
 
 
 
@@ -44,8 +45,6 @@ def search_google(query, number_pages):
             'failedExtractions' : failed_extractions
         }
     '''
-
-
     DATE = str(date.today())
     t = time.localtime()
     CURRENT_TIME = time.strftime("%H-%M-%S", t)
@@ -79,20 +78,20 @@ def search_google(query, number_pages):
                 article.parse()
 
             except:
-                print('error')
+                print(f'Failed to retrieve article #{num} error')
 
             if article.text != '':
-
                 search_result = {
                     "title":        result.get("title"),
                     "link":         result.get("link"),
                     "displayLink" : result.get("displayLink"),
-                    "text":         article.text,
                     "snippet":      result.get("snippet"),
                     #"pagemap":      result.get("pagemap"),
                     "index":        start_index + num,
+                    "text":         article.text
                 }
                 search_results.append(search_result)
+
             else:
                 failed_result  = {
                     "title":        result.get("title"),

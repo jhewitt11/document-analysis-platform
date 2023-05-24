@@ -1,6 +1,9 @@
 import json
 import os
 
+def jprint(json_in, indent_level = 2):    
+    print(json.dumps(json_in, indent = indent_level))
+
 def read_dictionary(FILE):
     try :
         with open(FILE) as infile:

@@ -1,0 +1,4 @@
+Flask==2.2.3
+Flask-SQLAlchemy==3.0.3
+newspaper3k==0.2.8
+flair==0.12

@@ -1,21 +1,10 @@
-import os
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 from flair.data import Sentence
 from flair.nn import Classifier
 from flair.splitter import SegtokSentenceSplitter
 
 from .general import read_dictionary
 from .general import query_list
-
-text = 'I love Berlin. This is my second sentence. JFK said "I am a Berliner" but Ronald Reagan demanded the wall be torn down.'
-
-splitter =  SegtokSentenceSplitter()
-sentences = splitter.split(text)
-
-tagger = Classifier.load('ner-fast')
-tagger.predict(sentences)
-
-
 
 def NER_results(text):
 
@@ -35,24 +24,12 @@ def NER_results(text):
 
 
 
-def NER_build_result_dictionary(query_num, doc_nums):
+def NER_build_result_dictionary(document_tuples):
 	'''
 	Build results for chart.js visualization.
 	'''
 
-	query_results = os.listdir('./data')[1:]
-	query_result_name = query_results[query_num]
-	query_result = read_dictionary('./data/'+query_result_name)
-
-	search_results = query_result['results']
-
-	doc_items = [search_results[k] for k in doc_nums]
-
-	titles = [item['title'] for item in doc_items]
-	display_links = [item['displayLink'] for item in doc_items]
-	texts = [item['text'] for item in doc_items]
-
-
+	titles, display_links, texts = document_tuples
 
 	ENTITY_ID = {}
 	ENTITY_COUNT_LIST = []
@@ -78,9 +55,6 @@ def NER_build_result_dictionary(query_num, doc_nums):
 		ENTITY_COUNT_LIST.append(entities_found)
 
 
-	print(ENTITY_ID)
-	print(ENTITY_COUNT_LIST)
-
 	chart_dataset = []
 
 	for i, ECL in enumerate(ENTITY_COUNT_LIST):
@@ -103,8 +77,6 @@ def NER_build_result_dictionary(query_num, doc_nums):
 		'labels' : list(ENTITY_ID.keys()),
 		'datasets' : chart_dataset
 	}
-
-	print(chart_data)
 
 	return chart_data
 

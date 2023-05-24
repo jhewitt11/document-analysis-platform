@@ -32,6 +32,7 @@ class GResult(db.Model):
     displayLink =   db.Column(db.String(300))
     text =          db.Column(db.Text())
     searchIndex =   db.Column(db.Integer)
+    queryPK =       db.Column(db.Integer)
 
     def __repr__(self):
         return f'<Title : {self.title}, DisplayLink : {self.displayLink}, Index : {self.searchIndex}>'
