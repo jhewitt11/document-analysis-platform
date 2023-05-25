@@ -77,7 +77,13 @@ def create_data_bundle_weaviate(queryPK, db, export = False):
 
 def upload_data_weaviate(bundle):
     '''
-    Upload data bundle to weaviate.
+    Upload data bundle to Weaviate db. 
+
+    Input : 
+    bundle : data object from create_data_bundle_Weaviate
+
+    Return : 
+    None
 
     '''
     class_name = 'Text_chunk'
@@ -117,15 +123,34 @@ def upload_data_weaviate(bundle):
 
 
 def oai_embedding(user_chat):
+    '''
+    Get embedding of user chat input from OpenAI
+
+    Input :
+    user_chat : Input from user
+
+    Output :
+    vector : Vector from OpenAI to be used for vector search.
+
+    '''
 
     MODEL = 'text-embedding-ada-002'
     oai_bundle = openai.Embedding.create(input = [user_chat], model = MODEL)
     oai_vector = oai_bundle['data'][0]['embedding']
 
-    return oai_bundle
+    return oai_vector
 
 
 def query_weaviate(vector):
+    '''
+    Vector search in Weaviate db.
+
+    Input : 
+    vector : embedding of user input - from OpenAI.
+
+    Output :
+    results : results dictionary from Weaviate
+    '''
 
     class_name = 'Text_chunk'
     MODEL = 'text-embedding-ada-002'
@@ -146,6 +171,16 @@ def query_weaviate(vector):
     return results
 
 def chat_response(user_chat, query_results):
+    '''
+    Sends user input and relevant context to GPT in a prompt and handles response.
+
+    Input :
+    user_chat : User input
+    query_results : Results dictionary from Weaviate query
+
+    Output :
+    bundle : Bundle that contains response from GPT as well as other information presented to user.
+    '''
 
     related_chunk = query_results['data']['Get']['Text_chunk'][0]['text']
     similarity = round(query_results['data']['Get']['Text_chunk'][0]['_additional']['certainty'], 3)

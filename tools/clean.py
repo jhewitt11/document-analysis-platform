@@ -2,7 +2,16 @@ import re
 
 def chunkify(text, LIMIT, OVERLAP, stats = False) :
     '''
-    Split text string into chunks no larger than LIMIT unless an entire sentence is longer. OVERLAP 
+    Split text string into chunks no larger than LIMIT unless an entire sentence is longer. Overlap chunks to minimize information splitting.
+
+    Inputs :
+    text : Text string to be split.
+    LIMIT : Size of chunk in characters.
+    OVERLAP : Number of characters to overlap in consecutive chunks.
+    stats : Boolean to control report of splitting process
+
+    Outputs :
+    chunks : List of chunks of roughly size LIMIT.
     '''
     OVERLAP = int(OVERLAP)
     assert(OVERLAP > 0 )
@@ -13,8 +22,6 @@ def chunkify(text, LIMIT, OVERLAP, stats = False) :
     chunks = []
     chunk_lengths = []
     current_chunk = ''
-
-    # current issue : '' starting chunk when theres a long initial sentence
 
     for sent in new_sents:
         if len(current_chunk) + len(sent) > LIMIT:
@@ -45,7 +52,13 @@ def chunkify(text, LIMIT, OVERLAP, stats = False) :
 
 def clean_text(text) :
     '''
-    Simplify text. Remove non utf-8 characters and consecutive whitespaces.
+    Clean text. Remove non utf-8 characters and consecutive whitespaces.
+
+    input :
+    text : text string
+
+    output :
+    text : cleaned text string
     '''
 
     text = bytes(text, 'utf-8').decode('utf-8','ignore')
@@ -56,8 +69,15 @@ def clean_text(text) :
 def clean_dictionary(query_dict):
     '''
     Query will be excluded from cleaning in this process.
-
     Only fetched results will be cleaned.
+
+    See search_google() for dictionary structure.
+
+    Input:
+    query_dict : query dictionary from a search
+
+    Output:
+    query_dict : query dictionary with cleaned results.
     '''
 
   #  cleaned_dict = query_dict.copy()

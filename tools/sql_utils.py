@@ -10,9 +10,12 @@ def upload_new_data_sql(data, db):
     '''
     Upload new data to the SQL database.
 
-    Input : data - data dictionary from a new query
+    Input : 
+    data - results dictionary from search_google()
+    db - SQLite database object
 
-    Output : new query PK or 'failure'
+    Output : 
+    QUERY_PK : new query PK or 'failure'
     '''
 
     QUERY = data['query']
@@ -75,9 +78,12 @@ def select_all_queries_sql(db):
     '''
     Get all QueryFile rows and return the right info as a list of tuples.
 
-    Input : db - database
+    Input : 
+    db : SQLite database object
 
-    Output : tuples - [(primarykey, query, date),...]
+    Output : 
+    tuples : tuples of all query entries from database 
+    [(primarykey, query, date),...]
 
     '''
 
@@ -107,8 +113,8 @@ def all_docs_from_querypk_sql(pk, db):
     Get GResult information given a QueryFile primary key.
 
     Inputs : 
-        pk : QueryFile pk 
-        db : database
+    pk : QueryFile primary key
+    db : SQL database object
 
     Output :
         results : tuples - [(searchIndex, title, displayLink),...]
@@ -141,11 +147,13 @@ def docs_from_querypk_sql(query_pk, indices, db):
     '''
     Get information from GResults by specifying query pk and indices.
 
-    Input : query_pk - QueryFile primary key
-            indices - list of searchIndex for desired GResults
-            db - database
+    Input : 
+    query_pk - QueryFile primary key
+    indices - list of searchIndex for desired GResults
+    db - SQL database object
 
-    Output : result_tup - (list(titles), list(displayLinks), list(texts))
+    Output : 
+    result_tup - (list(titles), list(displayLinks), list(texts))
 
     '''
     QF = db.session.scalars(select(QueryFile.name).where(QueryFile.pk == query_pk)

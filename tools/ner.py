@@ -7,6 +7,29 @@ from .general import read_dictionary
 from .general import query_list
 
 def NER_results(text):
+	'''
+	Create results list of Named Entities from a text document using Flair framework.
+
+	Flair annotates sentences and get_labels() is used to access the data. 
+
+	label.value : Tagged label
+	label.data_point.text : Text associated with label
+
+	Flair citation : 
+	@inproceedings{akbik2019flair,
+	  title={{FLAIR}: An easy-to-use framework for state-of-the-art {NLP}},
+	  author={Akbik, Alan and Bergmann, Tanja and Blythe, Duncan and Rasul, Kashif and Schweter, Stefan and Vollgraf, Roland},
+	  booktitle={{NAACL} 2019, 2019 Annual Conference of the North American Chapter of the Association for Computational Linguistics (Demonstrations)},
+	  pages={54--59},
+	  year={2019}
+	}
+
+	Input :
+	text : text document
+
+	Output :
+	results : List of result tuples. (sentence index, label, text)
+	'''
 
 	splitter =  SegtokSentenceSplitter()
 	sentences = splitter.split(text)
@@ -26,7 +49,13 @@ def NER_results(text):
 
 def NER_build_result_dictionary(document_tuples):
 	'''
-	Build results for chart.js visualization.
+	Build results from NER task for chart.js visualization.
+
+	Input :
+	document_tuples : Tuples of information for each document being analyzed.
+
+	Output :
+	chart_data : NER data from each document compiled in a result for chart.js display.
 	'''
 
 	titles, display_links, texts = document_tuples

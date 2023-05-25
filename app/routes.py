@@ -7,7 +7,10 @@ from app import app, db
 import tools
 
 
-'''Navigation'''
+'''
+Navigation Routes
+
+'''
 @app.route("/")
 @app.route("/index")    
 def index():
@@ -25,6 +28,9 @@ def NER_page():
 
     return render_template("NER.html", query_date_tups = query_date_tups)
 
+@app.route("/QA")
+def QA():
+    return render_template("Q&A.html")
 
 '''Home page functions'''
 @app.route('/search', methods = ['POST', 'GET'])
@@ -34,19 +40,21 @@ def search():
     if not query :
         return "No query provided."
 
+    # Google search and transform results to standard format
     query_dict = tools.search_google(query, 2)
+
+    # Clean search results
     query_dict = tools.clean_dictionary(query_dict)
+
+    # Upload results to SQL
     new_qpk = tools.upload_new_data_sql(query_dict, db)
+
+    # Transform results to Weaviate format and upload
     data_bundle = tools.create_data_bundle_weaviate(new_qpk, db, export = True)
-
-
     tools.upload_data_weaviate(data_bundle)
 
 
-
-
-
-    #tools.save_google_results(query_dict, 'data/')
+    # Prepare results for display HTML
     search_results = query_dict['results']
     res_l = []
     for res in search_results:
@@ -62,8 +70,11 @@ def search():
 def summarize():
 
     url = str(request.form['link_input'])
+
+    # Get article summary and title from url provided
     TITLE, SUMMARY = tools.get_summary(url)
      
+    # Flash messages to be displayed in HTML
     flash("Title : " + TITLE)
     flash("Summary : " + SUMMARY)
     
@@ -74,6 +85,10 @@ def summarize():
 '''NER page functions'''
 @app.route("/NER_list_data", methods = ['POST'])
 def NER_list_data():
+    '''
+    Displays all queries in SQL database to user.
+    '''
+
 
     # tuple form (i, query, date)
     query_date_tups = tools.select_all_queries_sql(db)    
@@ -85,14 +100,11 @@ def NER_list_data():
 @app.route("/NER_list_documents", methods = ['POST'])
 def NER_list_documents():
     '''
-    Reload page and display documents from the user provided query pk.
-
-
+    Display documents from the user provided query primary key.
     '''
     query_num = int(request.form['query_number_input'])
 
     query_date_tups = tools.select_all_queries_sql(db)  
-
     doc_results = tools.all_docs_from_querypk_sql(query_num, db)
   
     return  render_template('NER.html', query_date_tups = query_date_tups, query_num = query_num, doc_results = doc_results, fx = 'NER_list_documents',)
@@ -128,36 +140,24 @@ def NER_compare_documents():
     
 
 '''Q&A page functions'''
-@app.route("/QA")
-def QA():
-    return render_template("Q&A.html")
-
 @app.route("/chatResponse", methods = ['POST'])
 def chatResponse():
+    '''
+    Answer user input with response from OpenAI chatbot.
+    '''
 
+    # ToDo:
     # validate user input
     # length() and tools.clean_text for now
     user_message = request.json['message']
     print('\nUser : ', user_message)
 
     # get oai embedding
-    embedding_bundle = tools.oai_embedding(user_message)
-
-    vector = embedding_bundle['data'][0]['embedding']
+    vector = tools.oai_embedding(user_message)
 
     # get context results from Weaviate query
     # openai wants related chunk(s)
     results = tools.query_weaviate(vector)
-
-    # configure prompt for top x contexts
-    # get oai chat.completion response
-    #oai_response = 
-
-
-    # make bundle
-
-
-
 
     bundle = tools.chat_response(user_message, results)
 

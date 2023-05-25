@@ -17,6 +17,13 @@ from .clean import clean_text
 def save_google_results(result_dict, directory = ''):
     '''
     Save results dictionary from search_google() in a consistent format.
+
+    Input :
+    result_dict : dictionary of search results
+    directory : directory to save json file
+
+    Output :
+    None
     '''
 
     query = result_dict['query']
@@ -34,7 +41,12 @@ def search_google(query, number_pages):
     '''
     Build dictionary from results of google query.
 
-    Returns :
+    Input :
+    query : search input string
+    number_pages : number of pages for Google to return
+
+    Output :
+    Results dictionary of format..
         query_d = {
             'query' : query,
             'date' : DATE,
@@ -119,7 +131,14 @@ def search_google(query, number_pages):
 
 def flash_results(result_dict):
     '''
-    See search_google() for dictionary format.
+    Flash information to be rentered in HTML. Messages sent by flash() are
+    accessed by get_flashed_messages() in HTML.
+
+    Input : 
+    result_dict : dictionary of search results
+
+    Output :
+    None
     '''
 
     search_results = result_dict['results']
