@@ -6,8 +6,6 @@ from models import QueryFile, GResult
 from sqlalchemy import select
 
 
-
-
 def upload_new_data_sql(data, db):
     '''
     Upload new data to the SQL database.
@@ -150,17 +148,11 @@ def docs_from_querypk_sql(query_pk, indices, db):
     Output : result_tup - (list(titles), list(displayLinks), list(texts))
 
     '''
-
     QF = db.session.scalars(select(QueryFile.name).where(QueryFile.pk == query_pk)
                         ).first()
 
 
     given_query = QF.split('_')[0]
-
-
-    # TESTING
-    print(f'\n\nQuery from provided query pk : {given_query}\nQuery PK : {query_pk}\n\n')
-
 
     titles = list(db.session.scalars(select(
                                         GResult.title,
@@ -189,77 +181,8 @@ def docs_from_querypk_sql(query_pk, indices, db):
                         )
         ))
 
-    print(f'\n\nLength of titles : {len(titles)}')
-    print(f'DisplayLinks : {displayLinks}')
-    print(f'Length of texts : {len(texts)}\n\n')
-
-
     result_tup = (titles, displayLinks, texts)
 
     return result_tup
 
 
-
-
-
-'''
-This can be run as a script to update the database with all files stored in the given directory.
-
-with app.app_context():
-
-    file_names = os.listdir('./data')[1:]
-
-    for file in file_names :
-        
-        with open('./data/' + file) as F:
-            data = json.load(F)
-
-        QUERY = data['query']
-        DATE = data['date']
-        TIME = data['time']
-
-        QF_name = QUERY+'_'+DATE+'_'+TIME
-
-        # check if this query is in the database
-        if QueryFile.query.filter_by(name=QF_name).first() != None :
-            continue
-
-        RESULTS = data['results']
-        for result in RESULTS:
-
-            TITLE = result['title']
-            LINK = result['link']
-            DISPLAYLINK = result['displayLink']
-            TEXT = result['text']
-            INDEX = result['index']
-
-            # turn date into python date type
-            py_date = date.fromisoformat(DATE)
-
-            # turn time into python time type
-            time_split = [int(x) for x in TIME.split('-')]
-            hour = time_split[0]
-            minute = time_split[1]
-            second = time_split[2]
-
-            py_time = time(hour, minute, second)
-
-            GR_entry = GResult( 
-                            query = QUERY,
-                            date = py_date,
-                            time = py_time,
-                            title = TITLE,
-                            link = LINK,
-                            displayLink = DISPLAYLINK,
-                            text = TEXT,
-                            searchIndex = INDEX,
-                            )
-
-            #print(GR_entry)
-            db.session.add(GR_entry)
-
-        QF_entry = QueryFile(name = QF_name)
-        db.session.add(QF_entry)
-        db.session.commit()
-
-'''

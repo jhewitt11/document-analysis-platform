@@ -141,15 +141,17 @@ def chatResponse():
     print('\nUser : ', user_message)
 
     # get oai embedding
-    embedding_bundle = oai_embedding(user_message)
+    embedding_bundle = tools.oai_embedding(user_message)
+
+    vector = embedding_bundle['data'][0]['embedding']
 
     # get context results from Weaviate query
     # openai wants related chunk(s)
-    weaviate_results = query_weaviate(vector)
+    results = tools.query_weaviate(vector)
 
     # configure prompt for top x contexts
     # get oai chat.completion response
-    oai_response = 
+    #oai_response = 
 
 
     # make bundle
@@ -157,6 +159,6 @@ def chatResponse():
 
 
 
-    bundle = tools.chat_response(user_message)
+    bundle = tools.chat_response(user_message, results)
 
     return bundle

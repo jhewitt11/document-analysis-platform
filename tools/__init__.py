@@ -20,6 +20,8 @@ from .sql_utils     import docs_from_querypk_sql
 
 from .vdb_utils     import create_data_bundle_weaviate
 from .vdb_utils     import upload_data_weaviate
+from .vdb_utils     import oai_embedding
+from .vdb_utils     import query_weaviate
 from .vdb_utils     import chat_response
 
 from .clean         import clean_dictionary

@@ -14,6 +14,7 @@ from flask import g
 #from app import app
 
 
+
 def create_data_bundle_weaviate(queryPK, db, export = False):
     '''
     Creates a dictionary of (data_obj, embeddings) to be uploaded to Weaviate. 
@@ -28,7 +29,7 @@ def create_data_bundle_weaviate(queryPK, db, export = False):
     '''
     Parameters
     '''
-    openai.api_key = "ak-9YSUQ3Tv64wUkXHdkxdnT3BlbkFJWN0NH0Tz2h82m4Lmpzg3"
+    openai.api_key = "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"
     MODEL = 'text-embedding-ada-002'
     chunk_limit = 1000
     chunk_overlap = 100
@@ -111,6 +112,8 @@ def upload_data_weaviate(bundle):
 
 def oai_embedding(user_chat):
 
+    print(os.getcwd())
+
     MODEL = 'text-embedding-ada-002'
     oai_bundle = openai.Embedding.create(input = [user_chat], model = MODEL)
     oai_vector = oai_bundle['data'][0]['embedding']
@@ -130,35 +133,17 @@ def query_weaviate(vector):
 
     results = (client.query.get(class_name, ['text']
     ).with_near_vector({
-        'vector' : oai_vector
+        'vector' : vector
     }).with_limit(1)
     .with_additional(['certainty'])
     .do())
 
     return results
 
-def chat_response(user_chat):
+def chat_response(user_chat, query_results):
 
-    class_name = 'Text_chunk'
-    MODEL = 'text-embedding-ada-002'
-
-    client = weaviate.Client(
-        url = "http://localhost:8080",
-        additional_headers = {"X-OpenAI-Api-Key" : "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"}
-    )
-
-    oai_bundle = openai.Embedding.create(input = [user_chat], model = MODEL)
-    oai_vector = oai_bundle['data'][0]['embedding']
-
-    results = (client.query.get(class_name, ['text']
-    ).with_near_vector({
-        'vector' : oai_vector
-    }).with_limit(1)
-    .with_additional(['certainty'])
-    .do())
-
-    related_chunk = results['data']['Get']['Text_chunk'][0]['text']
-    similarity = round(results['data']['Get']['Text_chunk'][0]['_additional']['certainty'], 3)
+    related_chunk = query_results['data']['Get']['Text_chunk'][0]['text']
+    similarity = round(query_results['data']['Get']['Text_chunk'][0]['_additional']['certainty'], 3)
 
 
     try : 
@@ -218,4 +203,4 @@ def chat_response(user_chat):
     'cost_cents' : cost_cents
     }
 
-    return oai_bundle
+    return bundle
