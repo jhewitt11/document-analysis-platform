@@ -118,7 +118,7 @@ def NER_compare_documents():
     print(f'\n\nUser provided indices : {indices}\n\n')
 
     # get data from database
-    doc_tuples = tools.docs_from_querypk(query_num, indices, db)
+    doc_tuples = tools.docs_from_querypk_sql(query_num, indices, db)
 
     # analyze data and get chart.js results
     chart_data = tools.NER_build_result_dictionary(doc_tuples)

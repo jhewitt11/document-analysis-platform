@@ -50,7 +50,7 @@ def search_google(query, number_pages):
     CURRENT_TIME = time.strftime("%H-%M-%S", t)
 
     settings_dict = read_dictionary('settings.json')
-    API_KEY     = settings_dict['API_KEY']
+    API_KEY     = settings_dict['GOOGLE_KEY']
     ENGINE_ID   = settings_dict['ENGINE_ID']
 
     search_results = []

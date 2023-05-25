@@ -3,6 +3,7 @@ import json
 import pickle
 
 import tools
+from .general import read_dictionary
 from models import QueryFile, GResult
 
 import sqlalchemy
@@ -29,7 +30,9 @@ def create_data_bundle_weaviate(queryPK, db, export = False):
     '''
     Parameters
     '''
-    openai.api_key = "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"
+    settings_dict = read_dictionary('settings.json')
+
+    openai.api_key = settings_dict["OpenAI_KEY"]
     MODEL = 'text-embedding-ada-002'
     chunk_limit = 1000
     chunk_overlap = 100
@@ -78,12 +81,15 @@ def upload_data_weaviate(bundle):
 
     '''
     class_name = 'Text_chunk'
+    settings_dict = read_dictionary('settings.json')
+
+
 
     client = weaviate.Client(
     url = "http://localhost:8080",  # Replace with your endpoint
     
     additional_headers = {
-        "X-OpenAI-Api-Key" : "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"
+        "X-OpenAI-Api-Key" : settings_dict["OpenAI_KEY"]
     }
     )
     
@@ -112,8 +118,6 @@ def upload_data_weaviate(bundle):
 
 def oai_embedding(user_chat):
 
-    print(os.getcwd())
-
     MODEL = 'text-embedding-ada-002'
     oai_bundle = openai.Embedding.create(input = [user_chat], model = MODEL)
     oai_vector = oai_bundle['data'][0]['embedding']
@@ -125,10 +129,11 @@ def query_weaviate(vector):
 
     class_name = 'Text_chunk'
     MODEL = 'text-embedding-ada-002'
+    settings_dict = read_dictionary('settings.json')
 
     client = weaviate.Client(
         url = "http://localhost:8080",
-        additional_headers = {"X-OpenAI-Api-Key" : "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"}
+        additional_headers = {"X-OpenAI-Api-Key" : settings_dict["OpenAI_KEY"]}
     )
 
     results = (client.query.get(class_name, ['text']
