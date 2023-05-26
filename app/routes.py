@@ -32,7 +32,10 @@ def NER_page():
 def QA():
     return render_template("Q&A.html")
 
-'''Home page functions'''
+'''
+Home page functions
+
+'''
 @app.route('/search', methods = ['POST', 'GET'])
 def search():
 
