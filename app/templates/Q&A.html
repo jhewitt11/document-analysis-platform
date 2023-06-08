@@ -8,6 +8,7 @@
 
 <div class='scroller' style = 'height : 400px'>
     <div id="chat-container"></div>
+
 </div>
 <div style = "justify-content: center;">
     <input style = "width : 500px;" type="text" id="user-input" placeholder="Type your message..." />
@@ -18,29 +19,37 @@
     const chatContainer = document.getElementById('chat-container');
     const userInput = document.getElementById('user-input');
 
-    function sendMessage() {
+    async function sendMessage() {
         const message = userInput.value;
         displayMessage('user', '\n\n\nUser : ' + message);
         userInput.value = '';
 
         // Make an API call to your Flask app and get the response
         // Replace this with your actual API call
-        fetch('http://localhost:5000/chatResponse', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ message: message })
-        })
-        .then(response => response.json())
-        .then(data => {
-            const resp_bundle = data;
+        try{
+            const response = await fetch('http://localhost:5000/chatResponse', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: message })
+            });
 
-            displayMessage('app', '\nBot : ' + resp_bundle.gpt_response);
-            displayMessage('app', '\nCost : ' + resp_bundle.cost_cents + ' cents')
-            displayMessage('app', 'Relatedness : ' + resp_bundle.similarity);
-            displayMessage('app', 'Context : ...' + resp_bundle.context + '\n');
-        });
+            const resp_bundle = await response.json();
+
+            displayMessage('app', '\nBot : ' + resp_bundle.gpt_response + '\n');
+            
+            for (const [text,  dpk,  sim] of resp_bundle.query_results){
+
+                displayMessage('app', 'Context : ' + text);
+                displayMessage('app', 'dpk : ' + dpk);
+                displayMessage('app', 'Sim : ' + sim);
+                displayMessage('app', '---');
+            }
+
+        } catch (error){
+            console.error('Error: ', error);
+        }
 
         function displayMessage(sender, message) {
             const messageElement = document.createElement('div');

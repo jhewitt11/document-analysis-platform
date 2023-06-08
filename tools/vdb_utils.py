@@ -175,11 +175,20 @@ def query_weaviate(vector, n : int = 5):
     print(f'WEAVIATE QUERY RESULTS\n')
     jprint(results)
 
-    return results
+    ## need to validate
+
+    cleaned_results = []
+    for result in results['data']['Get']['Text_chunk']:
+
+        #SQL query for url  given DPK
+
+        cleaned_results.append((result['text'], result['documentPK'], result['_additional']['certainty']))
+
+    return cleaned_results
 
 def chat_response(user_chat, query_results):
     '''
-    Sends user input and relevant context to GPT in a prompt and handles response.
+    Sends user input and relevant context(s) to GPT in a prompt and handles response.
 
     Input :
     user_chat : User input
@@ -192,19 +201,13 @@ def chat_response(user_chat, query_results):
     openai.api_key = settings_dict["OpenAI_KEY"]
 
 
-    similarity = round(query_results['data']['Get']['Text_chunk'][0]['_additional']['certainty'], 3)
-
     contexts = ''
-    for result in query_results['data']['Get']['Text_chunk'] :
-        text = result['text']
+    for text, dpk, sim in query_results :
         contexts += f'Context : {text}\n'
 
     user_content = f'''Use the contexts provided to answer the question.''' + contexts + f'''Question : {user_chat}'''
 
 
-
-
-    #f'''Use the contexts provided to answer the question. Context : {related_chunk}, Question : {user_chat}'''}
     try : 
         gpt_response = openai.ChatCompletion.create(
             model = 'gpt-3.5-turbo',
@@ -256,8 +259,7 @@ def chat_response(user_chat, query_results):
     cost_cents = round(0.2 / 1000 * tokens, 3)
 
     bundle = {
-    'context' : contexts,
-    'similarity' : similarity,
+    'query_results' : query_results,
     'gpt_response' : gpt_text,
     'cost_cents' : cost_cents
     }
