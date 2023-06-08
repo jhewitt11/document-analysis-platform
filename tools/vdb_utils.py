@@ -3,7 +3,7 @@ import json
 import pickle
 
 import tools
-from .general import read_dictionary
+from .general import read_dictionary, jprint
 from models import QueryFile, GResult
 
 import sqlalchemy
@@ -31,8 +31,8 @@ def create_data_bundle_weaviate(queryPK, db, export = False):
     Parameters
     '''
     settings_dict = read_dictionary('settings.json')
-
     openai.api_key = settings_dict["OpenAI_KEY"]
+
     MODEL = 'text-embedding-ada-002'
     chunk_limit = 1000
     chunk_overlap = 100
@@ -50,6 +50,7 @@ def create_data_bundle_weaviate(queryPK, db, export = False):
         text = row.text
 
         chunks = tools.chunkify(text, chunk_limit, chunk_overlap, stats = False)
+
         result = openai.Embedding.create(input = chunks, model = MODEL)
 
         data_list = result['data']
@@ -133,6 +134,9 @@ def oai_embedding(user_chat):
     vector : Vector from OpenAI to be used for vector search.
 
     '''
+    settings_dict = read_dictionary('settings.json')
+    openai.api_key = settings_dict["OpenAI_KEY"]
+
 
     MODEL = 'text-embedding-ada-002'
     oai_bundle = openai.Embedding.create(input = [user_chat], model = MODEL)
@@ -141,7 +145,7 @@ def oai_embedding(user_chat):
     return oai_vector
 
 
-def query_weaviate(vector):
+def query_weaviate(vector, n : int = 5):
     '''
     Vector search in Weaviate db.
 
@@ -161,12 +165,15 @@ def query_weaviate(vector):
         additional_headers = {"X-OpenAI-Api-Key" : settings_dict["OpenAI_KEY"]}
     )
 
-    results = (client.query.get(class_name, ['text']
+    results = (client.query.get(class_name, ['text', 'documentPK']
     ).with_near_vector({
         'vector' : vector
-    }).with_limit(1)
+    }).with_limit(n)
     .with_additional(['certainty'])
     .do())
+
+    print(f'WEAVIATE QUERY RESULTS\n')
+    jprint(results)
 
     return results
 
@@ -181,17 +188,29 @@ def chat_response(user_chat, query_results):
     Output :
     bundle : Bundle that contains response from GPT as well as other information presented to user.
     '''
+    settings_dict = read_dictionary('settings.json')
+    openai.api_key = settings_dict["OpenAI_KEY"]
 
-    related_chunk = query_results['data']['Get']['Text_chunk'][0]['text']
+
     similarity = round(query_results['data']['Get']['Text_chunk'][0]['_additional']['certainty'], 3)
 
+    contexts = ''
+    for result in query_results['data']['Get']['Text_chunk'] :
+        text = result['text']
+        contexts += f'Context : {text}\n'
 
+    user_content = f'''Use the contexts provided to answer the question.''' + contexts + f'''Question : {user_chat}'''
+
+
+
+
+    #f'''Use the contexts provided to answer the question. Context : {related_chunk}, Question : {user_chat}'''}
     try : 
         gpt_response = openai.ChatCompletion.create(
             model = 'gpt-3.5-turbo',
             messages = [
                 {'role' : 'system', 'content' : '''You are a helpful assistant that answers questions. Do not guess if you don't know.'''},
-                {'role' : 'user', 'content' : f'''Use the context provided to answer the question. Context : {related_chunk}, Question : {user_chat}'''}
+                {'role' : 'user', 'content' : user_content}
             ]
         )
     except openai.error.Timeout as e:
@@ -224,7 +243,7 @@ def chat_response(user_chat, query_results):
       pass
 
 
-    print('OpenAI bundle received :\n', gpt_response)
+    #print('OpenAI bundle received :\n', gpt_response)
 
     if gpt_response['choices'][0]['finish_reason'] == 'stop':
 
@@ -237,7 +256,7 @@ def chat_response(user_chat, query_results):
     cost_cents = round(0.2 / 1000 * tokens, 3)
 
     bundle = {
-    'context' : related_chunk,
+    'context' : contexts,
     'similarity' : similarity,
     'gpt_response' : gpt_text,
     'cost_cents' : cost_cents

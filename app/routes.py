@@ -54,6 +54,10 @@ def search():
 
     # Transform results to Weaviate format and upload
     data_bundle = tools.create_data_bundle_weaviate(new_qpk, db, export = True)
+
+
+
+
     tools.upload_data_weaviate(data_bundle)
 
 
@@ -160,7 +164,7 @@ def chatResponse():
 
     # get context results from Weaviate query
     # openai wants related chunk(s)
-    results = tools.query_weaviate(vector)
+    results = tools.query_weaviate(vector, n = 3)
 
     bundle = tools.chat_response(user_message, results)
 
