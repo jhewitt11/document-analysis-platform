@@ -172,19 +172,19 @@ def query_weaviate(vector, n : int = 5):
     .with_additional(['certainty'])
     .do())
 
-    print(f'WEAVIATE QUERY RESULTS\n')
-    jprint(results)
-
     ## need to validate
 
-    cleaned_results = []
+    texts = []
+    dpks = []
+    sims = []
     for result in results['data']['Get']['Text_chunk']:
 
         #SQL query for url  given DPK
+        texts.append(result['text'])
+        dpks.append(result['documentPK'])
+        sims.append(result['_additional']['certainty'])
 
-        cleaned_results.append((result['text'], result['documentPK'], result['_additional']['certainty']))
-
-    return cleaned_results
+    return texts, dpks, sims
 
 def chat_response(user_chat, query_results):
     '''
@@ -199,16 +199,17 @@ def chat_response(user_chat, query_results):
     '''
     settings_dict = read_dictionary('settings.json')
     openai.api_key = settings_dict["OpenAI_KEY"]
-
-
+    
     contexts = ''
-    for text, dpk, sim in query_results :
-        contexts += f'Context : {text}\n'
 
-    user_content = f'''Use the contexts provided to answer the question.''' + contexts + f'''Question : {user_chat}'''
+    print(query_results)
+
+    for text, link, sim in query_results:
+        contexts += f'Context : {text}\n'
 
 
     try : 
+        user_content = f'''Use the contexts provided to answer the question.''' + contexts + f'''Question : {user_chat}'''
         gpt_response = openai.ChatCompletion.create(
             model = 'gpt-3.5-turbo',
             messages = [
@@ -216,6 +217,7 @@ def chat_response(user_chat, query_results):
                 {'role' : 'user', 'content' : user_content}
             ]
         )
+
     except openai.error.Timeout as e:
       #Handle timeout error, e.g. retry or log
       print(f"OpenAI API request timed out: {e}")
@@ -249,7 +251,6 @@ def chat_response(user_chat, query_results):
     #print('OpenAI bundle received :\n', gpt_response)
 
     if gpt_response['choices'][0]['finish_reason'] == 'stop':
-
         gpt_text = gpt_response['choices'][0]['message']['content']
 
     else : 
@@ -259,9 +260,9 @@ def chat_response(user_chat, query_results):
     cost_cents = round(0.2 / 1000 * tokens, 3)
 
     bundle = {
-    'query_results' : query_results,
-    'gpt_response' : gpt_text,
-    'cost_cents' : cost_cents
+        'query_results' : query_results,
+        'gpt_response' : gpt_text,
+        'cost_cents' : cost_cents
     }
 
     return bundle

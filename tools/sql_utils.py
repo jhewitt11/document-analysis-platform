@@ -189,8 +189,18 @@ def docs_from_querypk_sql(query_pk, indices, db):
                         )
         ))
 
-    result_tup = (titles, displayLinks, texts)
-
-    return result_tup
+    return titles, displayLinks, texts
 
 
+
+
+def links_from_docpks_sql(docpks, db):
+
+    links = list(db.session.scalars(select(
+                                    GResult.link,
+                        ).where(
+                                    GResult.pk.in_(docpks)
+                        )
+            ))
+
+    return links

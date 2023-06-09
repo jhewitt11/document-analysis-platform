@@ -6,7 +6,7 @@
 <p>Ask questions about the documents in the database.</p>
 <hr>
 
-<div class='scroller' style = 'height : 400px'>
+<div class='scroller' style = 'height : 1000px'>
     <div id="chat-container"></div>
 
 </div>
@@ -37,12 +37,14 @@
 
             const resp_bundle = await response.json();
 
-            displayMessage('app', '\nBot : ' + resp_bundle.gpt_response + '\n');
-            
-            for (const [text,  dpk,  sim] of resp_bundle.query_results){
+            displayMessage('app', '\nBot : ' + resp_bundle.gpt_response );
+            displayMessage('app', '');
+
+
+            for (const [text,  link,  sim] of resp_bundle.query_results){
 
                 displayMessage('app', 'Context : ' + text);
-                displayMessage('app', 'dpk : ' + dpk);
+                displayMessage('app', 'Source : ' + link);
                 displayMessage('app', 'Sim : ' + sim);
                 displayMessage('app', '---');
             }

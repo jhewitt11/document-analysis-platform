@@ -17,6 +17,7 @@ from .sql_utils     import upload_new_data_sql
 from .sql_utils     import select_all_queries_sql
 from .sql_utils     import all_docs_from_querypk_sql
 from .sql_utils     import docs_from_querypk_sql
+from .sql_utils     import links_from_docpks_sql
 
 from .vdb_utils     import create_data_bundle_weaviate
 from .vdb_utils     import upload_data_weaviate

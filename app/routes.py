@@ -162,10 +162,13 @@ def chatResponse():
     # get oai embedding
     vector = tools.oai_embedding(user_message)
 
-    # get context results from Weaviate query
-    # openai wants related chunk(s)
-    results = tools.query_weaviate(vector, n = 3)
+    texts, dpks, sims = tools.query_weaviate(vector, n = 3)
 
-    bundle = tools.chat_response(user_message, results)
+    # turn dpks to links
+    links = tools.links_from_docpks_sql(dpks, db)
+
+
+    # transform 
+    bundle = tools.chat_response(user_message, list(zip(texts, links, sims)))
 
     return bundle
