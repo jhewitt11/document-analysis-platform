@@ -32,10 +32,7 @@ def NER_page():
 def QA():
     return render_template("Q&A.html")
 
-'''
-Home page functions
-
-'''
+'''Home page functions'''
 @app.route('/search', methods = ['POST', 'GET'])
 def search():
 
@@ -71,7 +68,6 @@ def search():
     return render_template("index.html", results = res_l, query = query, fx = 'search')
 
 
-
 '''Summarize page functions '''
 @app.route('/summarize_article', methods = ['POST', 'GET'])
 def summarize():
@@ -86,7 +82,6 @@ def summarize():
     flash("Summary : " + SUMMARY)
     
     return render_template("Summarize.html", fx = 'summarize')
-
 
 
 '''NER page functions'''
@@ -172,3 +167,19 @@ def chatResponse():
     bundle = tools.chat_response(user_message, list(zip(texts, links, sims)))
 
     return bundle
+
+
+
+'''API Calls'''
+@app.route('/queries', methods = ['GET'])
+def queries():
+
+    tuples = tools.select_all_queries_sql(db)
+
+    queries = []
+
+    for pk, query, date in tuples:
+        queries.append(query)
+        
+    return {'queries' : queries,
+            }
