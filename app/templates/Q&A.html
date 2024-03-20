@@ -27,6 +27,8 @@
         // Make an API call to your Flask app and get the response
         // Replace this with your actual API call
         try{
+
+            console.log('Sending message:', message); // Add this line before the fetch call
             const response = await fetch('http://localhost:5000/chatResponse', {
                 method: 'POST',
                 headers: {

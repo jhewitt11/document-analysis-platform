@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<h2>Messing around with Javascript</h2>
+
+<button onclick= "doMath()">Do Math</button>
+
+<script>
+    async function doMath(){
+        try {
+            const url = 'http://127.0.0.1:5000/doMath'
+            const response = await fetch(url);
+            const data = await response.json();
+
+
+        } catch (err) {
+            console.log("fetch error", err)
+        }   
+    }
+</script>
+
+
+{% endblock %}

@@ -50,8 +50,12 @@ def create_data_bundle_weaviate(queryPK, db, export = False):
         text = row.text
 
         chunks = tools.chunkify(text, chunk_limit, chunk_overlap, stats = False)
-
         result = openai.Embedding.create(input = chunks, model = MODEL)
+
+
+
+
+
 
         data_list = result['data']
 

@@ -192,8 +192,6 @@ def docs_from_querypk_sql(query_pk, indices, db):
     return titles, displayLinks, texts
 
 
-
-
 def links_from_docpks_sql(docpks, db):
 
     links = list(db.session.scalars(select(

@@ -5,3 +5,4 @@ data
 instance
 scripts
 Docker*
+*.docx

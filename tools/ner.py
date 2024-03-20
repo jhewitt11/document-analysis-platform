@@ -6,6 +6,24 @@ from flair.splitter import SegtokSentenceSplitter
 from .general import read_dictionary
 from .general import query_list
 
+import requests
+
+
+'''
+def NER_results_HF(text):
+'''
+#NER via HF API
+'''
+settings_dict = read_dictionary('settings.json')
+
+HF_KEY = settings_dict["HF_KEY"]
+
+
+## huggingface api call
+
+return results
+'''
+
 def NER_results(text):
 	'''
 	Create results list of Named Entities from a text document using Flair framework.

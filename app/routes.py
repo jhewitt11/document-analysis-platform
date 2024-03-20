@@ -157,18 +157,22 @@ def chatResponse():
     # get oai embedding
     vector = tools.oai_embedding(user_message)
 
+    print(user_message)
+
     texts, dpks, sims = tools.query_weaviate(vector, n = 3)
+
+
 
     # turn dpks to links
     links = tools.links_from_docpks_sql(dpks, db)
 
+    print(links)
 
     # transform 
     bundle = tools.chat_response(user_message, list(zip(texts, links, sims)))
 
+
     return bundle
-
-
 
 '''API Calls'''
 @app.route('/queries', methods = ['GET'])
@@ -183,3 +187,17 @@ def queries():
         
     return {'queries' : queries,
             }
+
+
+''' Sandbox '''
+@app.route("/Sandbox")
+def Sandbox():
+    return render_template('Sandbox.html')
+
+''' Sandbox APIs'''
+@app.route('/doMath')
+def doMath():
+
+
+
+    return 5
