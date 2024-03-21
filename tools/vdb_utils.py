@@ -10,6 +10,11 @@ import sqlalchemy
 from sqlalchemy import select
 import weaviate
 import openai
+from openai import OpenAI
+
+
+settings_dict = read_dictionary('settings.json')
+client = OpenAI(api_key=settings_dict["OpenAI_KEY"])
 
 from flask import g
 #from app import app
@@ -31,7 +36,6 @@ def create_data_bundle_weaviate(queryPK, db, export = False):
     Parameters
     '''
     settings_dict = read_dictionary('settings.json')
-    openai.api_key = settings_dict["OpenAI_KEY"]
 
     MODEL = 'text-embedding-ada-002'
     chunk_limit = 1000
@@ -50,14 +54,14 @@ def create_data_bundle_weaviate(queryPK, db, export = False):
         text = row.text
 
         chunks = tools.chunkify(text, chunk_limit, chunk_overlap, stats = False)
-        result = openai.Embedding.create(input = chunks, model = MODEL)
+        result = client.embeddings.create(input = chunks, model = MODEL)
 
 
 
 
 
 
-        data_list = result['data']
+        data_list = result.data
 
         for data in data_list :
             order = data['index']
@@ -139,12 +143,11 @@ def oai_embedding(user_chat):
 
     '''
     settings_dict = read_dictionary('settings.json')
-    openai.api_key = settings_dict["OpenAI_KEY"]
 
 
     MODEL = 'text-embedding-ada-002'
-    oai_bundle = openai.Embedding.create(input = [user_chat], model = MODEL)
-    oai_vector = oai_bundle['data'][0]['embedding']
+    oai_bundle = client.embeddings.create(input = [user_chat], model = MODEL)
+    oai_vector = oai_bundle.data[0].embedding
 
     return oai_vector
 
@@ -181,7 +184,12 @@ def query_weaviate(vector, n : int = 5):
     texts = []
     dpks = []
     sims = []
+
+    print(f'\n**First**\n{results}')
+
     for result in results['data']['Get']['Text_chunk']:
+
+        print(f'\n**In loop**\n{result}\n\n')
 
         #SQL query for url  given DPK
         texts.append(result['text'])
@@ -202,7 +210,6 @@ def chat_response(user_chat, query_results):
     bundle : Bundle that contains response from GPT as well as other information presented to user.
     '''
     settings_dict = read_dictionary('settings.json')
-    openai.api_key = settings_dict["OpenAI_KEY"]
     
     contexts = ''
 
@@ -214,39 +221,37 @@ def chat_response(user_chat, query_results):
 
     try : 
         user_content = f'''Use the contexts provided to answer the question.''' + contexts + f'''Question : {user_chat}'''
-        gpt_response = openai.ChatCompletion.create(
-            model = 'gpt-3.5-turbo',
-            messages = [
-                {'role' : 'system', 'content' : '''You are a helpful assistant that answers questions. Do not guess if you don't know.'''},
-                {'role' : 'user', 'content' : user_content}
-            ]
-        )
+        gpt_response = client.chat.completions.create(model = 'gpt-3.5-turbo',
+        messages = [
+            {'role' : 'system', 'content' : '''You are a helpful assistant that answers questions. Do not guess if you don't know.'''},
+            {'role' : 'user', 'content' : user_content}
+        ])
 
-    except openai.error.Timeout as e:
+    except openai.Timeout as e:
       #Handle timeout error, e.g. retry or log
       print(f"OpenAI API request timed out: {e}")
       pass
-    except openai.error.APIError as e:
+    except openai.APIError as e:
       #Handle API error, e.g. retry or log
       print(f"OpenAI API returned an API Error: {e}")
       pass
-    except openai.error.APIConnectionError as e:
+    except openai.APIConnectionError as e:
       #Handle connection error, e.g. check network or log
       print(f"OpenAI API request failed to connect: {e}")
       pass
-    except openai.error.InvalidRequestError as e:
+    except openai.InvalidRequestError as e:
       #Handle invalid request error, e.g. validate parameters or log
       print(f"OpenAI API request was invalid: {e}")
       pass
-    except openai.error.AuthenticationError as e:
+    except openai.AuthenticationError as e:
       #Handle authentication error, e.g. check credentials or log
       print(f"OpenAI API request was not authorized: {e}")
       pass
-    except openai.error.PermissionError as e:
+    except openai.PermissionError as e:
       #Handle permission error, e.g. check scope or log
       print(f"OpenAI API request was not permitted: {e}")
       pass
-    except openai.error.RateLimitError as e:
+    except openai.RateLimitError as e:
       #Handle rate limit error, e.g. wait or log
       print(f"OpenAI API request exceeded rate limit: {e}")
       pass
@@ -254,13 +259,13 @@ def chat_response(user_chat, query_results):
 
     #print('OpenAI bundle received :\n', gpt_response)
 
-    if gpt_response['choices'][0]['finish_reason'] == 'stop':
-        gpt_text = gpt_response['choices'][0]['message']['content']
+    if gpt_response.choices[0].finish_reason == 'stop':
+        gpt_text = gpt_response.choices[0].message.content
 
     else : 
         gpt_text = 'I had an issue processing your text.'
 
-    tokens = gpt_response['usage']['total_tokens']
+    tokens = gpt_response.usage.total_tokens
     cost_cents = round(0.2 / 1000 * tokens, 3)
 
     bundle = {
